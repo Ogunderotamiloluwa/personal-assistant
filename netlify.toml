@@ -1,0 +1,16 @@
+# Netlify Configuration for Frontend Deployment
+# Free tier compatible
+
+[build]
+  command = "cd frontend && npm install && npm run build"
+  publish = "frontend/dist"
+
+# IMPORTANT: Set VITE_API_URL in Netlify UI:
+# Site settings → Build & deploy → Environment → Edit variables
+# Set: VITE_API_URL = https://persona-assistant-backend.onrender.com
+
+# Redirect all other requests to index.html for SPA routing
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
