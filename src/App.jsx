@@ -370,7 +370,10 @@ export default function App() {
 function AppRouter({ currentPage }) {
   const { isAuthenticated, loading, logout } = useAuth()
 
+  console.log('📄 AppRouter rendering:', { currentPage, isAuthenticated, loading })
+
   if (loading) {
+    console.log('⏳ Auth still loading, showing spinner...')
     return (
       <div className="w-full h-screen bg-gradient-to-br from-command-dark via-command-slate to-command-dark flex items-center justify-center">
         <motion.div
@@ -427,9 +430,11 @@ function AppRouter({ currentPage }) {
   // If user tries to access protected route without auth, redirect to landing page
   const protectedRoutes = ['dashboard', 'profile', 'habits', 'routines', 'todos', 'weather', 'analytics', 'chat']
   if (protectedRoutes.includes(currentPage) && !isAuthenticated) {
+    console.log('🔐 Protected route accessed without auth, showing Landing Page')
     return <LandingPage />
   }
 
   // Default: show landing page for any unrecognized routes or empty currentPage
+  console.log('🏠 Showing Landing Page (default route)')
   return <LandingPage />
 }
