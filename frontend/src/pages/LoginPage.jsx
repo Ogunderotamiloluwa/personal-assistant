@@ -31,7 +31,7 @@ export default function LoginPage({ onSuccess }) {
           const data = await response.json()
           setError(data.error || 'Login failed')
         } else {
-          setError('Server error. Please make sure backend is running on localhost:5006')
+          setError('Server error. Please check backend connection.')
         }
         return
       }
@@ -43,12 +43,12 @@ export default function LoginPage({ onSuccess }) {
 
       onSuccess && onSuccess(data)
       
-      // Redirect to dashboard
+      // Redirect to landing page (user can navigate to dashboard if they want)
       setTimeout(() => {
-        window.location.hash = '#/dashboard'
+        window.location.hash = '#/'
       }, 300)
     } catch (err) {
-      setError('Connection error. Is backend running on localhost:5006?')
+      setError('Connection error. Backend may not be running.')
       console.error(err)
     } finally {
       setLoading(false)

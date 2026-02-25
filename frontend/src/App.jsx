@@ -332,24 +332,7 @@ function DashboardContent() {
 
 // Main App with routing
 export default function App() {
-  const [currentPage, setCurrentPage] = useState(() => {
-    // First check if there's a saved page location
-    const savedPage = localStorage.getItem('lastVisitedPage')
-    
-    // If saved page exists and URL is at root, restore it
-    if (savedPage && (!window.location.hash || window.location.hash === '#/')) {
-      // Set the hash to restore the page
-      window.location.hash = `#/${savedPage}`
-      return savedPage
-    }
-    
-    // Otherwise use URL hash
-    if (!window.location.hash || window.location.hash === '#/') {
-      return ''
-    }
-    const hash = window.location.hash.slice(1).split('/')[1] || ''
-    return hash
-  })
+  const [currentPage, setCurrentPage] = useState('') // Always start empty (landing page)
 
   // Initialize theme on app load
   useEffect(() => {
@@ -359,16 +342,17 @@ export default function App() {
     console.log('Theme initialized:', savedTheme)
   }, [])
 
+  // Handle initial hash on first load
+  useEffect(() => {
+    const hash = window.location.hash.slice(1).split('/')[1] || ''
+    setCurrentPage(hash)
+  }, [])
+
   useEffect(() => {
     const handleHashChange = () => {
       const hash = window.location.hash.slice(1).split('/')[1] || ''
       console.log('Hash changed to:', hash)
       setCurrentPage(hash)
-      
-      // Save the current page to localStorage so it persists on refresh
-      if (hash) {
-        localStorage.setItem('lastVisitedPage', hash)
-      }
     }
     window.addEventListener('hashchange', handleHashChange)
     return () => window.removeEventListener('hashchange', handleHashChange)
@@ -386,7 +370,10 @@ export default function App() {
 function AppRouter({ currentPage }) {
   const { isAuthenticated, loading, logout } = useAuth()
 
+  console.log('📄 AppRouter rendering:', { currentPage, isAuthenticated, loading })
+
   if (loading) {
+    console.log('⏳ Auth still loading, showing spinner...')
     return (
       <div className="w-full h-screen bg-gradient-to-br from-command-dark via-command-slate to-command-dark flex items-center justify-center">
         <motion.div
@@ -407,11 +394,6 @@ function AppRouter({ currentPage }) {
   }
   if (currentPage === 'forgot-password') {
     return <ForgotPasswordPage />
-  }
-
-  // Landing page - public, shows when not at any specific route
-  if (currentPage === '' || currentPage === 'home') {
-    return <LandingPage />
   }
 
   // Protected routes - require authentication
@@ -445,13 +427,14 @@ function AppRouter({ currentPage }) {
     }
   }
 
-  // If user tries to access protected route without auth, redirect to login
+  // If user tries to access protected route without auth, redirect to landing page
   const protectedRoutes = ['dashboard', 'profile', 'habits', 'routines', 'todos', 'weather', 'analytics', 'chat']
   if (protectedRoutes.includes(currentPage) && !isAuthenticated) {
-    window.location.hash = '#/login'
-    return null
+    console.log('🔐 Protected route accessed without auth, showing Landing Page')
+    return <LandingPage />
   }
 
-  // Default: show landing page for any unrecognized routes
+  // Default: show landing page for any unrecognized routes or empty currentPage
+  console.log('🏠 Showing Landing Page (default route)')
   return <LandingPage />
 }

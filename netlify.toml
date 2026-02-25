@@ -11,49 +11,46 @@
 
 # Additional HTTP headers for proper MIME types
 [[headers]]
-  for = "/assets/*.js"
+  for = "/assets/*"
   [headers.values]
     Content-Type = "application/javascript; charset=utf-8"
     Cache-Control = "public, max-age=31536000, immutable"
 
 [[headers]]
-  for = "/*.js"
+  for = "*.js"
   [headers.values]
     Content-Type = "application/javascript; charset=utf-8"
     Cache-Control = "public, max-age=31536000, immutable"
 
 [[headers]]
-  for = "/assets/*.css"
+  for = "*.css"
   [headers.values]
     Content-Type = "text/css; charset=utf-8"
     Cache-Control = "public, max-age=31536000, immutable"
 
 [[headers]]
-  for = "/*.css"
-  [headers.values]
-    Content-Type = "text/css; charset=utf-8"
-    Cache-Control = "public, max-age=31536000, immutable"
-
-[[headers]]
-  for = "/assets/*.wasm"
+  for = "*.wasm"
   [headers.values]
     Content-Type = "application/wasm"
     Cache-Control = "public, max-age=31536000, immutable"
 
 [[headers]]
-  for = "/assets/*.json"
+  for = "*.json"
   [headers.values]
     Content-Type = "application/json"
     Cache-Control = "public, max-age=31536000, immutable"
 
 [[headers]]
-  for = "/*.json"
+  for = "*.map"
   [headers.values]
     Content-Type = "application/json"
     Cache-Control = "public, max-age=31536000, immutable"
 
-# Catch-all for HTML - SPA routing
+# CRITICAL FIX: Only redirect if file doesn't exist (404 handling)
+# This ensures /assets/* files are served correctly
 [[redirects]]
   from = "/*"
   to = "/index.html"
-  status = 200
+  status = 404
+  force = false
+

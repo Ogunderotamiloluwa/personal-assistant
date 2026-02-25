@@ -15,26 +15,58 @@ export default function WeatherPage() {
 
   // Get user location on mount
   useEffect(() => {
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          setUserLocation({
-            latitude: position.coords.latitude,
-            longitude: position.coords.longitude,
-            name: 'Your Location'
-          })
-          fetchWeatherAndForecast(position.coords.latitude, position.coords.longitude, 'Your Location')
-        },
-        (err) => {
-          console.log('Geolocation error:', err)
-          setError('Location not available. Search for a location below.')
+    const getLocation = () => {
+      if (navigator.geolocation) {
+        // Set timeout for geolocation request (10 seconds max)
+        const timeoutId = setTimeout(() => {
+          setError('Location request timed out. Please search for a location.')
           setLoading(false)
-        }
-      )
-    } else {
-      setError('Geolocation not supported')
-      setLoading(false)
+        }, 10000)
+
+        navigator.geolocation.getCurrentPosition(
+          (position) => {
+            clearTimeout(timeoutId)
+            setUserLocation({
+              latitude: position.coords.latitude,
+              longitude: position.coords.longitude,
+              name: 'Your Location'
+            })
+            fetchWeatherAndForecast(position.coords.latitude, position.coords.longitude, 'Your Location')
+          },
+          (err) => {
+            clearTimeout(timeoutId)
+            console.log('❌ Geolocation error:', err.message)
+            let errorMsg = 'Location not available. '
+            
+            switch(err.code) {
+              case err.PERMISSION_DENIED:
+                errorMsg += 'Please enable location permissions in your browser settings.'
+                break
+              case err.POSITION_UNAVAILABLE:
+                errorMsg += 'Location information is unavailable.'
+                break
+              case err.TIMEOUT:
+                errorMsg += 'Location request timed out.'
+                break
+              default:
+                errorMsg += 'An error occurred while getting your location.'
+            }
+            
+            setError(errorMsg + ' You can search for a location below.')
+            setLoading(false)
+          },
+          {
+            timeout: 8000,
+            enableHighAccuracy: false // Don't require high accuracy for faster results
+          }
+        )
+      } else {
+        setError('⚠️ Geolocation is not supported in your browser. Please search for a location below.')
+        setLoading(false)
+      }
     }
+
+    getLocation()
   }, [])
 
   // Fetch weather and forecast data
