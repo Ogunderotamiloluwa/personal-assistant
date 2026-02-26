@@ -1,5 +1,6 @@
 # Netlify Configuration for Frontend Deployment
 # Free tier compatible
+# Cache bust: Force rebuild 2026-02-26
 
 [build]
   command = "cd frontend && npm install && npm run build"
