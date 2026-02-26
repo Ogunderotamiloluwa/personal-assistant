@@ -9,48 +9,82 @@
 [build.environment]
   VITE_API_URL = "https://persona-assistant-backend.onrender.com"
 
-# Additional HTTP headers for proper MIME types
+# CRITICAL: MIME type headers - Order matters! Specific patterns first
 [[headers]]
-  for = "/assets/*"
+  for = "/assets/*.js"
   [headers.values]
     Content-Type = "application/javascript; charset=utf-8"
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "/assets/*.css"
+  [headers.values]
+    Content-Type = "text/css; charset=utf-8"
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "/assets/*.wasm"
+  [headers.values]
+    Content-Type = "application/wasm"
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "/assets/*.map"
+  [headers.values]
+    Content-Type = "application/json"
     Cache-Control = "public, max-age=31536000, immutable"
 
 [[headers]]
   for = "*.js"
   [headers.values]
     Content-Type = "application/javascript; charset=utf-8"
-    Cache-Control = "public, max-age=31536000, immutable"
 
 [[headers]]
   for = "*.css"
   [headers.values]
     Content-Type = "text/css; charset=utf-8"
-    Cache-Control = "public, max-age=31536000, immutable"
-
-[[headers]]
-  for = "*.wasm"
-  [headers.values]
-    Content-Type = "application/wasm"
-    Cache-Control = "public, max-age=31536000, immutable"
 
 [[headers]]
   for = "*.json"
   [headers.values]
     Content-Type = "application/json"
-    Cache-Control = "public, max-age=31536000, immutable"
 
 [[headers]]
-  for = "*.map"
+  for = "/*.ico"
   [headers.values]
-    Content-Type = "application/json"
-    Cache-Control = "public, max-age=31536000, immutable"
+    Content-Type = "image/x-icon"
 
-# CRITICAL FIX: Only redirect if file doesn't exist (404 handling)
-# This ensures /assets/* files are served correctly
+[[headers]]
+  for = "/*.svg"
+  [headers.values]
+    Content-Type = "image/svg+xml"
+
+[[headers]]
+  for = "/*.png"
+  [headers.values]
+    Content-Type = "image/png"
+
+[[headers]]
+  for = "/*.jpg"
+  [headers.values]
+    Content-Type = "image/jpeg"
+
+# HTML and general content
+[[headers]]
+  for = "/*.html"
+  [headers.values]
+    Content-Type = "text/html; charset=utf-8"
+    Cache-Control = "no-cache"
+
+[[headers]]
+  for = "/"
+  [headers.values]
+    Content-Type = "text/html; charset=utf-8"
+    Cache-Control = "no-cache"
+
+# CRITICAL: SPA Routing - ONLY apply to 404s, not actual files
 [[redirects]]
   from = "/*"
   to = "/index.html"
   status = 404
-  force = false
 
