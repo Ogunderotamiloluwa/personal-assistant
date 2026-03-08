@@ -1,24 +1,35 @@
 // API Configuration - Smart Backend Port Detection
-// Automatically determines backend URL based on frontend port
-// Frontend: http://localhost:3000 → Backend: http://localhost:5004 ✓
+// Automatically determines backend URL based on environment
+// Production: uses Render backend
+// Development: uses localhost
 
 const getAPIUrl = () => {
-  // HARDCODED FOR NOW - Backend is ALWAYS on 5004 (see backend .env PORT=5004)
-  return 'http://localhost:5004';
+  // Production environment - use Render backend
+  if (window.location.hostname === 'personal-assistan.netlify.app' || 
+      window.location.hostname.includes('netlify.app')) {
+    return 'https://persona-assistant-backend.onrender.com';
+  }
+  
+  // Development environment - use localhost
+  if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+    return 'http://localhost:5004';
+  }
+  
+  // Default fallback to Render
+  return 'https://persona-assistant-backend.onrender.com';
 };
 
 export const API_URL = getAPIUrl();
 
-// FORCE LOG ON LOAD
+// Log configuration
 console.clear();
-console.log('%c🚀 FRONTEND LOADED', 'font-size: 20px; font-weight: bold; color: green;');
-console.log('%c════════════════════════════════════════', 'color: green;');
-console.log('🔗 API Configuration Loaded');
-console.log('   Frontend URL:', window.location.href);
-console.log('   Hostname:', window.location.hostname);
-console.log('   Port:', window.location.port || '3000');
-console.log('   ➜ Backend API:', API_URL);
-console.log('%c════════════════════════════════════════', 'color: green;');
-console.log('💡 To see login details, scroll down in console after clicking LOGIN');
+console.log('FRONTEND LOADED');
+console.log('════════════════════════════════════════');
+console.log('API Configuration Loaded');
+console.log('Frontend URL:', window.location.href);
+console.log('Hostname:', window.location.hostname);
+console.log('Port:', window.location.port || '3000');
+console.log('Backend API:', API_URL);
+console.log('════════════════════════════════════════');
 
 export default API_URL;
