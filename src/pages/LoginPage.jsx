@@ -18,25 +18,46 @@ export default function LoginPage({ onSuccess }) {
     setLoading(true)
 
     try {
-      const response = await fetch(`${API_URL}/api/auth/login`, {
+      console.log('🔐 LOGIN ATTEMPT');
+      console.log('   API_URL:', API_URL);
+      console.log('   Full URL:', `${API_URL}/api/auth/login`);
+      console.log('   Email:', email);
+      console.log('   Password:', password);
+      
+      const loginUrl = `${API_URL}/api/auth/login`;
+      const loginData = { email, password };
+      
+      console.log('📤 Sending request to:', loginUrl);
+      console.log('   Payload:', loginData);
+      
+      const response = await fetch(loginUrl, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
-        body: JSON.stringify({ email, password })
+        body: JSON.stringify(loginData)
       })
+
+      console.log('📥 Response received:');
+      console.log('   Status:', response.status);
+      console.log('   StatusText:', response.statusText);
 
       if (!response.ok) {
         const contentType = response.headers.get('content-type')
         if (contentType && contentType.includes('application/json')) {
           const data = await response.json()
+          console.log('❌ Login failed:', data.error);
           setError(data.error || 'Login failed')
         } else {
+          console.log('❌ Server error - non-JSON response');
           setError('Server error. Please check backend connection.')
         }
         return
       }
 
       const data = await response.json()
+      console.log('✅ Login successful!');
+      console.log('   Token:', data.token);
+      console.log('   User:', data.user);
 
       // Update auth context with token
       login(data.token, data.user)
@@ -48,8 +69,7 @@ export default function LoginPage({ onSuccess }) {
         window.location.hash = '#/'
       }, 300)
     } catch (err) {
-      setError('Connection error. Backend may not be running.')
-      console.error(err)
+      console.error('🚨 FETCH ERROR:', err);
     } finally {
       setLoading(false)
     }

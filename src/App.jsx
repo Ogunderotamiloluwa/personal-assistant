@@ -8,6 +8,7 @@ import { useRoutineReminders } from './hooks/useRoutineReminders'
 import { useHabitReminders } from './hooks/useHabitReminders'
 import { useTodoReminders } from './hooks/useTodoReminders'
 import { API_URL } from './config/apiConfig'
+import notificationService from './services/notificationService'
 import Sidebar from './components/Sidebar'
 import Header from './components/Header'
 import MessageBubble from './components/MessageBubble'
@@ -28,14 +29,12 @@ import ChatPage from './pages/ChatPage'
 import DashboardSidebar from './components/DashboardSidebar'
 import TodoReminder from './components/TodoReminder'
 import BossCommands from './components/BossCommands'
+import StatsOverview from './components/StatsOverview'
 
 function DashboardContent() {
   const { token } = useAuth()
   const [suggestions, setSuggestions] = useState([])
-  const [habits, setHabits] = useState([
-    { id: 1, name: 'Morning Run', description: '30 min cardio session', frequency: 'daily', progress: 75, completed: false },
-    { id: 2, name: 'Read', description: 'Chapter from a book', frequency: 'daily', progress: 50, completed: false },
-  ])
+  const [habits, setHabits] = useState([])
   const [routines, setRoutines] = useState([])
   const [todos, setTodos] = useState([])
   const [userLocation, setUserLocation] = useState(null)
@@ -76,6 +75,26 @@ function DashboardContent() {
     const interval = setInterval(loadRoutines, 5 * 60 * 1000)
     return () => clearInterval(interval)
   }, [])
+
+  // Initialize push notifications when user is logged in
+  useEffect(() => {
+    if (token) {
+      initializeNotifications()
+    }
+  }, [token])
+
+  const initializeNotifications = async () => {
+    try {
+      const initialized = await notificationService.initialize()
+      if (initialized) {
+        console.log('✅ Notifications enabled');
+        // Try to subscribe to push notifications
+        await notificationService.subscribeToPushNotifications(token)
+      }
+    } catch (error) {
+      console.log('ℹ️ Notifications not available:', error.message)
+    }
+  }
 
   const fetchData = async () => {
     // Create abort controller with timeout
@@ -202,6 +221,9 @@ function DashboardContent() {
             >
               <TodoReminder />
             </motion.div>
+
+            {/* Live Stats Overview */}
+            <StatsOverview />
 
             {/* Main Grid */}
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">

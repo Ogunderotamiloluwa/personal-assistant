@@ -56,20 +56,36 @@ export default function Header() {
 
   return (
     <header className="sticky top-0 z-30 bg-gradient-to-b from-command-dark to-transparent backdrop-blur-xl border-b border-glass-border">
-      <div className="px-6 py-6">
-        <div className="flex items-start justify-between gap-6">
+      <div className="px-4 md:px-6 py-4 md:py-6">
+        <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-3 md:gap-6">
           <div className="flex-1">
             <motion.h1
               initial={{ opacity: 0, y: -10 }}
               animate={{ opacity: 1, y: 0 }}
-              className="text-3xl font-bold text-white"
+              className="text-2xl md:text-3xl font-bold text-white"
             >
               Command Center
             </motion.h1>
-            <p className="text-sm text-gray-400 mt-1">Welcome back, Chief. Time to execute.</p>
+            <p className="text-xs md:text-sm text-gray-400 mt-0.5 md:mt-1 hidden sm:block">Welcome back, Chief. Time to execute.</p>
           </div>
 
           {/* Stats */}
+          <div className="grid grid-cols-3 gap-2 md:gap-4 md:hidden">
+            {statsList.map((stat, idx) => (
+              <motion.div
+                key={idx}
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ delay: idx * 0.1 }}
+                className="p-2 md:p-3 rounded bg-glass-bg border border-glass-border backdrop-blur-xl"
+              >
+                <stat.icon size={14} className={`${stat.color} md:w-4 md:h-4`} />
+                <div className="text-xs text-gray-400 mt-1 truncate">{stat.label}</div>
+                <div className="text-sm md:text-lg font-semibold text-white mt-0.5">{stat.value}</div>
+              </motion.div>
+            ))}
+          </div>
+
           <div className="hidden lg:grid grid-cols-3 gap-4">
             {statsList.map((stat, idx) => (
               <motion.div

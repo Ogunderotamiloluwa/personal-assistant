@@ -34,82 +34,83 @@ export default function RoutineCard({ routine, onDelete, onEdit, onComplete }) {
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -20 }}
       whileHover={{ y: -4 }}
-      className="p-6 rounded-2xl bg-glass-bg border border-glass-border backdrop-blur-xl hover:border-command-gold/50 transition-all group"
+      className="p-4 md:p-6 rounded-lg md:rounded-2xl bg-glass-bg border border-glass-border backdrop-blur-xl hover:border-command-gold/50 transition-all group"
       style={{ borderTop: `4px solid ${routine.color || '#d4af37'}` }}
     >
-      <div className="flex items-start justify-between mb-4">
-        <div className="flex-1">
-          <h3 className="text-lg font-semibold text-white mb-1">{routine.name}</h3>
+      <div className="flex items-start justify-between gap-2 mb-3 md:mb-4">
+        <div className="flex-1 min-w-0">
+          <h3 className="text-sm md:text-lg font-semibold text-white truncate mb-0.5 md:mb-1">{routine.name}</h3>
           {routine.description && (
-            <p className="text-sm text-gray-400 line-clamp-1 mb-2">{routine.description}</p>
+            <p className="text-xs md:text-sm text-gray-400 line-clamp-1 mb-2">{routine.description}</p>
           )}
           
           {/* Time and Days */}
-          <div className="flex items-center gap-4 mt-3 text-xs text-gray-400">
+          <div className="flex items-center gap-2 md:gap-4 mt-2 text-xs text-gray-400 flex-wrap">
             <div className="flex items-center gap-1">
-              <Clock size={14} />
+              <Clock size={12} className="md:w-4 md:h-4" />
               <span>{routine.time}</span>
             </div>
             <div className="flex items-center gap-1">
-              <Calendar size={14} />
-              <span>{routine.repeatDays?.length || 0} days/week</span>
+              <Calendar size={12} className="md:w-4 md:h-4" />
+              <span className="hidden xs:inline">{routine.repeatDays?.length || 0}d/wk</span>
+              <span className="xs:hidden">{routine.repeatDays?.length || 0}d</span>
             </div>
           </div>
         </div>
 
         {/* Actions */}
-        <div className="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+        <div className="flex gap-1 flex-shrink-0">
           <motion.button
-            whileHover={{ scale: 1.1 }}
+            whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
             onClick={() => onEdit && onEdit(routine)}
-            className="p-2 rounded-lg hover:bg-blue-500/20 text-blue-400 transition-colors"
+            className="p-1.5 md:p-2 rounded hover:bg-blue-500/20 text-blue-400 transition-colors"
           >
-            <Edit2 size={16} />
+            <Edit2 size={14} className="md:w-4 md:h-4" />
           </motion.button>
           <motion.button
-            whileHover={{ scale: 1.1 }}
+            whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
             onClick={handleDelete}
-            className="p-2 rounded-lg hover:bg-red-500/20 text-red-400 transition-colors"
+            className="p-1.5 md:p-2 rounded hover:bg-red-500/20 text-red-400 transition-colors"
           >
-            <Trash2 size={16} />
+            <Trash2 size={14} className="md:w-4 md:h-4" />
           </motion.button>
         </div>
       </div>
 
       {/* Tasks */}
       {totalTasks > 0 && (
-        <div className="mb-4">
-          <div className="text-xs text-gray-400 mb-2">
-            {completedTasks} of {totalTasks} tasks
+        <div className="mb-3 md:mb-4">
+          <div className="text-xs text-gray-400 mb-1.5 md:mb-2">
+            {completedTasks}/{totalTasks} tasks
           </div>
-          <div className="space-y-1">
-            {routine.tasks?.slice(0, 3).map(task => (
-              <div key={task.id} className="text-xs text-gray-400 flex items-center gap-2">
-                <div className={`w-3 h-3 rounded border ${task.completed ? 'bg-green-500 border-green-500' : 'border-gray-600'}`} />
-                <span className={task.completed ? 'line-through text-gray-500' : ''}>{task.title}</span>
+          <div className="space-y-0.5">
+            {routine.tasks?.slice(0, 2).map(task => (
+              <div key={task.id} className="text-xs text-gray-400 flex items-center gap-2 truncate">
+                <div className={`w-3 h-3 flex-shrink-0 rounded border ${task.completed ? 'bg-green-500 border-green-500' : 'border-gray-600'}`} />
+                <span className={`truncate ${task.completed ? 'line-through text-gray-500' : ''}`}>{task.title}</span>
               </div>
             ))}
-            {totalTasks > 3 && (
-              <div className="text-xs text-gray-500">+{totalTasks - 3} more tasks</div>
+            {totalTasks > 2 && (
+              <div className="text-xs text-gray-500">+{totalTasks - 2} more</div>
             )}
           </div>
         </div>
       )}
 
-      {/* Days View */}
-      <div className="flex gap-1 mb-4">
-        {['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'].map(day => (
+      {/* Days View - Compact */}
+      <div className="flex gap-0.5 md:gap-1 mb-3 md:mb-4">
+        {['M', 'T', 'W', 'T', 'F', 'S', 'S'].map((day, idx) => (
           <div
-            key={day}
+            key={day + idx}
             className={`flex-1 py-1 text-xs text-center rounded font-medium ${
-              routine.repeatDays?.includes(day)
+              routine.repeatDays?.includes(['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'][idx])
                 ? 'bg-command-gold/30 text-command-gold'
                 : 'bg-white/5 text-gray-500'
             }`}
           >
-            {day.slice(0, 1)}
+            {day}
           </div>
         ))}
       </div>
@@ -119,10 +120,11 @@ export default function RoutineCard({ routine, onDelete, onEdit, onComplete }) {
         whileHover={{ scale: 1.02 }}
         whileTap={{ scale: 0.98 }}
         onClick={() => onComplete && onComplete(routine.id)}
-        className="w-full py-3 px-4 rounded-xl bg-gradient-to-r from-command-gold to-command-cobalt text-command-dark hover:shadow-lg transition-all font-semibold flex items-center justify-center gap-2"
+        className="w-full py-2 md:py-3 px-3 md:px-4 rounded-lg md:rounded-xl bg-gradient-to-r from-command-gold to-command-cobalt text-command-dark hover:shadow-lg transition-all font-semibold flex items-center justify-center gap-1 md:gap-2 text-sm md:text-base"
       >
-        <CheckCircle2 size={18} />
-        Start Routine
+        <CheckCircle2 size={16} className="md:w-5 md:h-5" />
+        <span className="hidden sm:inline">Start Routine</span>
+        <span className="sm:hidden">Start</span>
       </motion.button>
     </motion.div>
   )

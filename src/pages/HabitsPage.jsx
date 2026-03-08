@@ -4,6 +4,7 @@ import { Plus, ArrowLeft, Loader } from 'lucide-react'
 import { API_URL } from '../config/apiConfig'
 import HabitCardEnhanced from '../components/HabitCardEnhanced'
 import HabitModal from '../components/HabitModal'
+import StatsOverview from '../components/StatsOverview'
 import { useNotifications } from '../context/NotificationContext'
 
 export default function HabitsManagementPage() {
@@ -142,20 +143,19 @@ export default function HabitsManagementPage() {
 
       {/* Header */}
       <div className="sticky top-0 z-40 backdrop-blur-xl border-b border-white/10">
-        <div className="max-w-6xl mx-auto px-4 py-6 flex justify-between items-center">
-          <div className="flex items-center gap-4">
+        <div className="max-w-6xl mx-auto px-4 py-4 md:py-6 flex justify-between items-center gap-4">
+          <div className="flex items-center gap-2 md:gap-4 flex-1">
             <motion.button
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               onClick={() => window.location.hash = '#/dashboard'}
-              className="flex items-center gap-2 px-3 py-2 rounded-lg text-command-gold hover:bg-glass-bg transition-colors"
+              className="flex items-center justify-center p-2 rounded-lg text-command-gold hover:bg-glass-bg transition-colors flex-shrink-0"
             >
-              <ArrowLeft size={18} />
-              Back
+              <ArrowLeft size={18} className="md:w-5 md:h-5" />
             </motion.button>
-            <div>
-              <h1 className="text-3xl font-bold text-white">Habits</h1>
-              <p className="text-sm text-gray-400">Track and manage your daily habits</p>
+            <div className="min-w-0">
+              <h1 className="text-xl md:text-3xl font-bold text-white truncate">Habits</h1>
+              <p className="text-xs md:text-sm text-gray-400 hidden sm:block">Track and manage your daily habits</p>
             </div>
           </div>
           <motion.button
@@ -165,53 +165,25 @@ export default function HabitsManagementPage() {
               setEditingHabit(null)
               setIsModalOpen(true)
             }}
-            className="flex items-center gap-2 px-4 py-3 rounded-xl bg-gradient-to-r from-command-gold to-command-cobalt text-command-dark font-semibold hover:shadow-lg transition-all"
+            className="flex items-center gap-1 md:gap-2 px-3 md:px-4 py-2 md:py-3 rounded-lg md:rounded-xl bg-gradient-to-r from-command-gold to-command-cobalt text-command-dark font-semibold hover:shadow-lg transition-all flex-shrink-0 text-sm md:text-base"
           >
-            <Plus size={20} />
-            New Habit
+            <Plus size={16} className="md:w-5 md:h-5" />
+            <span className="hidden sm:inline">New Habit</span>
+            <span className="sm:hidden">Add</span>
           </motion.button>
         </div>
       </div>
 
       {/* Stats */}
-      <div className="max-w-6xl mx-auto px-4 py-8 relative z-10">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="p-6 rounded-2xl bg-glass-bg border border-glass-border backdrop-blur-xl"
-          >
-            <div className="text-gray-400 text-sm mb-2">Total Habits</div>
-            <div className="text-4xl font-bold text-command-gold">{totalHabits}</div>
-          </motion.div>
-
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.1 }}
-            className="p-6 rounded-2xl bg-glass-bg border border-glass-border backdrop-blur-xl"
-          >
-            <div className="text-gray-400 text-sm mb-2">Completed Today</div>
-            <div className="text-4xl font-bold text-green-400">{completedToday}</div>
-          </motion.div>
-
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2 }}
-            className="p-6 rounded-2xl bg-glass-bg border border-glass-border backdrop-blur-xl"
-          >
-            <div className="text-gray-400 text-sm mb-2">Average Progress</div>
-            <div className="text-4xl font-bold text-command-cobalt">{averageProgress}%</div>
-          </motion.div>
-        </div>
+      <div className="max-w-6xl mx-auto px-4 py-6 md:py-8 relative z-10">
+        <StatsOverview />
 
         {/* Error Message */}
         {error && (
           <motion.div
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
-            className="mb-6 p-4 rounded-lg bg-red-500/20 border border-red-500/50 text-red-200"
+            className="mb-6 p-3 md:p-4 rounded-lg bg-red-500/20 border border-red-500/50 text-red-200 text-sm"
           >
             {error}
           </motion.div>
@@ -231,24 +203,24 @@ export default function HabitsManagementPage() {
           <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
-            className="text-center py-16"
+            className="text-center py-12 md:py-16"
           >
-            <div className="text-6xl mb-4">🎯</div>
-            <h2 className="text-2xl font-bold text-white mb-2">No habits yet</h2>
-            <p className="text-gray-400 mb-6">Create your first habit to get started!</p>
+            <div className="text-5xl md:text-6xl mb-4">🎯</div>
+            <h2 className="text-xl md:text-2xl font-bold text-white mb-2">No habits yet</h2>
+            <p className="text-sm md:text-base text-gray-400 mb-6">Create your first habit to get started!</p>
             <motion.button
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               onClick={() => setIsModalOpen(true)}
-              className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r from-command-gold to-command-cobalt text-command-dark font-semibold hover:shadow-lg transition-all"
+              className="inline-flex items-center gap-2 px-4 md:px-6 py-2 md:py-3 rounded-lg md:rounded-xl bg-gradient-to-r from-command-gold to-command-cobalt text-command-dark font-semibold hover:shadow-lg transition-all text-sm md:text-base"
             >
-              <Plus size={20} />
+              <Plus size={18} className="md:w-5 md:h-5" />
               Create First Habit
             </motion.button>
           </motion.div>
         ) : (
           // Habits Grid
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6">
             <AnimatePresence>
               {habits.map((habit) => (
                 <HabitCardEnhanced

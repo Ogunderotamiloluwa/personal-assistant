@@ -80,7 +80,7 @@ export default function TodoCard({ todo, onComplete, onDelete, onEdit, userLocat
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -20 }}
-      className={`p-5 rounded-xl border-2 backdrop-blur-xl transition-all ${
+      className={`p-3 md:p-5 rounded-lg md:rounded-xl border-2 backdrop-blur-xl transition-all ${
         isNearTime && isOverdue
           ? 'bg-red-500/10 border-red-500/50 shadow-lg shadow-red-500/20'
           : isNearTime
@@ -89,53 +89,53 @@ export default function TodoCard({ todo, onComplete, onDelete, onEdit, userLocat
       }`}
     >
       {/* Header */}
-      <div className="flex items-start justify-between mb-3">
-        <div className="flex-1">
-          <h3 className="text-lg font-semibold text-white">{todo.title}</h3>
+      <div className="flex items-start justify-between gap-2 mb-2 md:mb-3">
+        <div className="flex-1 min-w-0">
+          <h3 className="text-sm md:text-lg font-semibold text-white truncate">{todo.title}</h3>
           {todo.description && (
-            <p className="text-sm text-gray-400 mt-1">{todo.description}</p>
+            <p className="text-xs md:text-sm text-gray-400 mt-0.5 md:mt-1 line-clamp-1">{todo.description}</p>
           )}
         </div>
-        <span className={`px-3 py-1 rounded-full text-xs font-semibold whitespace-nowrap ml-2 ${riskStyle.bg} border border-white/20 ${riskStyle.text}`}>
+        <span className={`px-2 md:px-3 py-0.5 md:py-1 rounded-full text-xs font-semibold whitespace-nowrap flex-shrink-0 ${riskStyle.bg} border border-white/20 ${riskStyle.text}`}>
           {todo.riskLevel === 'low' && '✅ Low'}
-          {todo.riskLevel === 'medium' && '⚠️ Medium'}
+          {todo.riskLevel === 'medium' && '⚠️ Med'}
           {todo.riskLevel === 'high' && '🚨 High'}
         </span>
       </div>
 
       {/* Time and Location */}
-      <div className="space-y-2 mb-3">
-        <div className="flex items-center gap-2 text-sm">
-          <Clock size={14} className={isNearTime || isOverdue ? 'text-red-400' : 'text-command-gold'} />
-          <span className={isNearTime || isOverdue ? 'text-red-400 font-semibold' : 'text-gray-300'}>
-            {todoTime.toLocaleString()}
+      <div className="space-y-1 md:space-y-2 mb-2 md:mb-3 text-xs md:text-sm">
+        <div className="flex items-center gap-2">
+          <Clock size={12} className="md:w-4 md:h-4 flex-shrink-0 text-command-gold" />
+          <span className={`${isNearTime || isOverdue ? 'text-red-400 font-semibold' : 'text-gray-300'} truncate`}>
+            {todoTime.toLocaleString('en-US', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })}
           </span>
-          <span className={`ml-auto font-semibold ${isOverdue ? 'text-red-400' : 'text-gray-400'}`}>
-            {timeLeft}
+          <span className={`ml-auto font-semibold flex-shrink-0 ${isOverdue ? 'text-red-400' : 'text-gray-400'}`}>
+            {timeLeft?.replace('minutes', 'm')?.replace('hours', 'h')}
           </span>
         </div>
 
         {todo.location && (
-          <div className="flex items-center gap-2 text-sm text-gray-300">
-            <MapPin size={14} className="text-blue-400" />
-            <span>{todo.location}</span>
+          <div className="flex items-center gap-2 text-gray-300 truncate">
+            <MapPin size={12} className="md:w-4 md:h-4 flex-shrink-0 text-blue-400" />
+            <span className="truncate text-xs md:text-sm">{todo.location}</span>
           </div>
         )}
       </div>
 
       {/* Alerts */}
       {(trafficAlert || weatherAlert) && (
-        <div className="space-y-2 mb-3 p-3 bg-red-500/10 border border-red-500/30 rounded-lg">
+        <div className="space-y-1 mb-2 md:mb-3 p-2 md:p-3 bg-red-500/10 border border-red-500/30 rounded">
           {trafficAlert && (
             <div className="flex items-center gap-2 text-xs text-red-300">
-              <Wind size={12} />
-              <span>{trafficAlert.message}</span>
+              <Wind size={11} className="md:w-3 md:h-3 flex-shrink-0" />
+              <span className="truncate">{trafficAlert.message}</span>
             </div>
           )}
           {weatherAlert && (
             <div className="flex items-center gap-2 text-xs text-red-300">
-              <CloudRain size={12} />
-              <span>{weatherAlert.message}</span>
+              <CloudRain size={11} className="md:w-3 md:h-3 flex-shrink-0" />
+              <span className="truncate">{weatherAlert.message}</span>
             </div>
           )}
         </div>
@@ -143,7 +143,7 @@ export default function TodoCard({ todo, onComplete, onDelete, onEdit, userLocat
 
       {/* Progress indicator if near time */}
       {isNearTime && (
-        <div className="mb-3 h-1 bg-red-500/20 rounded-full overflow-hidden">
+        <div className="mb-2 md:mb-3 h-1 bg-red-500/20 rounded-full overflow-hidden">
           <motion.div
             animate={{ width: ['0%', '100%'] }}
             transition={{ duration: 60, repeat: Infinity }}
@@ -158,26 +158,27 @@ export default function TodoCard({ todo, onComplete, onDelete, onEdit, userLocat
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
           onClick={() => onComplete(todo.id)}
-          className="flex-1 py-2 px-3 rounded-lg bg-gradient-to-r from-green-600 to-green-700 text-white font-semibold hover:shadow-lg transition-all flex items-center justify-center gap-2"
+          className="flex-1 py-1.5 md:py-2 px-2 md:px-3 rounded text-xs md:text-sm bg-gradient-to-r from-green-600 to-green-700 text-white font-semibold hover:shadow-lg transition-all flex items-center justify-center gap-1"
         >
-          <CheckCircle2 size={16} />
-          Complete
+          <CheckCircle2 size={14} className="md:w-4 md:h-4" />
+          <span className="hidden sm:inline">Complete</span>
+          <span className="sm:hidden">Done</span>
         </motion.button>
         <motion.button
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
           onClick={() => onDelete(todo.id)}
-          className="py-2 px-3 rounded-lg bg-white/5 border border-white/10 text-gray-300 hover:bg-red-500/20 hover:border-red-500/50 hover:text-red-400 transition-all"
+          className="py-1.5 md:py-2 px-2 md:px-3 rounded bg-white/5 border border-white/10 text-gray-300 hover:bg-red-500/20 hover:border-red-500/50 hover:text-red-400 transition-all"
         >
-          <Trash2 size={16} />
+          <Trash2 size={14} className="md:w-4 md:h-4" />
         </motion.button>
       </div>
 
       {/* Danger indicator */}
       {isNearTime && isOverdue && (
         <div className="mt-2 text-xs text-red-400 flex items-center gap-1">
-          <AlertTriangle size={12} />
-          This todo is overdue! Complete it now!
+          <AlertTriangle size={11} className="md:w-3 md:h-3 flex-shrink-0" />
+          <span className="truncate">This todo is overdue!</span>
         </div>
       )}
     </motion.div>
