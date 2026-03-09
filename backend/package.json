@@ -1,0 +1,26 @@
+{
+  "name": "pa-web-app-backend",
+  "version": "1.0.0",
+  "description": "Backend for Digital Personal Assistant Web App",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js"
+  },
+  "keywords": [
+    "personal-assistant",
+    "productivity",
+    "habits",
+    "routines"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "cookie-parser": "^1.4.6",
+    "cors": "^2.8.6",
+    "dotenv": "^16.6.1",
+    "express": "^4.22.1",
+    "mongoose": "^8.23.0",
+    "web-push": "^3.6.7"
+  }
+}
