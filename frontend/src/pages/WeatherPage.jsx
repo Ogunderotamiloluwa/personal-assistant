@@ -17,11 +17,12 @@ export default function WeatherPage() {
   useEffect(() => {
     const getLocation = () => {
       if (navigator.geolocation) {
-        // Set timeout for geolocation request (10 seconds max)
+        // Set timeout for geolocation request (5 seconds max)
         const timeoutId = setTimeout(() => {
-          setError('Location request timed out. Please search for a location.')
+          console.log('Geolocation timeout - user can search manually')
+          setError(null)
           setLoading(false)
-        }, 10000)
+        }, 5000)
 
         navigator.geolocation.getCurrentPosition(
           (position) => {
@@ -31,37 +32,29 @@ export default function WeatherPage() {
               longitude: position.coords.longitude,
               name: 'Your Location'
             })
+            setSelectedLocation({
+              latitude: position.coords.latitude,
+              longitude: position.coords.longitude,
+              name: 'Your Location'
+            })
             fetchWeatherAndForecast(position.coords.latitude, position.coords.longitude, 'Your Location')
           },
           (err) => {
             clearTimeout(timeoutId)
             console.log('Geolocation error:', err.message)
-            let errorMsg = 'Location not available. '
-            
-            switch(err.code) {
-              case err.PERMISSION_DENIED:
-                errorMsg += 'Please enable location permissions in your browser settings.'
-                break
-              case err.POSITION_UNAVAILABLE:
-                errorMsg += 'Location information is unavailable.'
-                break
-              case err.TIMEOUT:
-                errorMsg += 'Location request timed out.'
-                break
-              default:
-                errorMsg += 'An error occurred while getting your location.'
-            }
-            
-            setError(errorMsg + ' You can search for a location below.')
+            // Don't show error, just allow user to search
+            setError(null)
             setLoading(false)
           },
           {
-            timeout: 8000,
-            enableHighAccuracy: false // Don't require high accuracy for faster results
+            timeout: 5000,
+            enableHighAccuracy: false,
+            maximumAge: 300000 // Cache location for 5 minutes
           }
         )
       } else {
-        setError('Geolocation is not supported in your browser. Please search for a location below.')
+        console.log('Geolocation not supported')
+        setError(null)
         setLoading(false)
       }
     }
@@ -209,21 +202,20 @@ export default function WeatherPage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50 dark:bg-gray-900 dark:text-white">
       {/* Header */}
-      <div className="sticky top-0 z-40 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 px-4 py-4">
-        <div className="max-w-7xl mx-auto px-4 py-6 flex justify-between items-center">
-          <div className="flex items-center gap-4">
+      <div className="sticky top-0 z-40 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
+        <div className="max-w-7xl mx-auto px-3 md:px-4 py-3 md:py-6 flex flex-col md:flex-row justify-between items-start md:items-center gap-3">
+          <div className="flex items-center gap-2 md:gap-4 flex-1 min-w-0">
             <motion.button
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               onClick={() => window.location.hash = '#/dashboard'}
-              className="flex items-center gap-2 px-3 py-2 rounded-lg text-gray-600 hover:bg-gray-100 transition-colors"
+              className="flex items-center justify-center p-2 rounded-lg text-gray-600 hover:bg-gray-100 transition-colors flex-shrink-0 w-10 h-10"
             >
               <ArrowLeft size={18} />
-              Back
             </motion.button>
-            <div>
-              <h1 className="text-3xl font-semibold text-gray-900">Weather & Forecast</h1>
-              <p className="text-sm text-gray-500 mt-1">Live weather with accurate forecasts</p>
+            <div className="min-w-0 flex-1">
+              <h1 className="text-lg md:text-3xl font-semibold text-gray-900 truncate">Weather</h1>
+              <p className="text-xs md:text-sm text-gray-500 hidden sm:block">Live forecasts</p>
             </div>
           </div>
           <motion.button
@@ -231,15 +223,15 @@ export default function WeatherPage() {
             whileTap={{ scale: 0.95 }}
             onClick={handleRefresh}
             disabled={loading}
-            className="px-4 py-2 rounded-lg bg-blue-100 text-blue-600 hover:bg-blue-200 transition-all disabled:opacity-50 font-semibold"
+            className="px-3 md:px-4 py-2 rounded-lg bg-blue-100 text-blue-600 hover:bg-blue-200 transition-all disabled:opacity-50 font-semibold text-sm md:text-base flex-shrink-0"
           >
-            {loading ? 'Updating...' : 'Refresh'}
+            {loading ? '...' : 'Refresh'}
           </motion.button>
         </div>
       </div>
 
       {/* Content */}
-      <div className="relative z-20 max-w-7xl mx-auto px-4 py-8">
+      <div className="relative z-20 max-w-7xl mx-auto px-3 md:px-4 py-4 md:py-8">
         {/* Location Search */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -319,49 +311,49 @@ export default function WeatherPage() {
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              className="p-8 rounded-lg bg-gradient-to-br from-blue-50 to-indigo-50 border border-blue-200"
+              className="p-4 md:p-8 rounded-lg bg-gradient-to-br from-blue-50 to-indigo-50 border border-blue-200"
             >
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+              <div className="grid grid-cols-1 gap-6 md:gap-8">
                 {/* Left - Main Info */}
                 <div className="flex flex-col items-center justify-center">
-                  <div className="text-8xl mb-4">{getWeatherIcon(weather.weatherCode)}</div>
+                  <div className="text-6xl md:text-8xl mb-3 md:mb-4">{getWeatherIcon(weather.weatherCode)}</div>
                   <div className="text-center">
-                    <div className="text-7xl font-bold text-gray-900 mb-2">
+                    <div className="text-5xl md:text-7xl font-bold text-gray-900 mb-1 md:mb-2">
                       {Math.round(weather.temperature)}°
                     </div>
-                    <div className="text-2xl font-semibold text-gray-700 mb-2">
+                    <div className="text-lg md:text-2xl font-semibold text-gray-700 mb-1 md:mb-2">
                       {weather.condition}
                     </div>
-                    <div className="text-base text-gray-600">
+                    <div className="text-sm md:text-base text-gray-600">
                       Feels like {Math.round(weather.apparentTemp)}°C
                     </div>
                   </div>
                 </div>
 
                 {/* Right - Detailed Metrics */}
-                <div className="grid grid-cols-2 gap-4">
-                  <motion.div whileHover={{ scale: 1.05 }} className="p-6 rounded-lg bg-white border border-blue-100 text-center">
-                    <Droplets className="mx-auto mb-2 text-blue-600" size={24} />
-                    <div className="text-sm text-gray-600 mb-2">Humidity</div>
-                    <div className="text-3xl font-bold text-gray-900">{weather.humidity}%</div>
+                <div className="grid grid-cols-2 gap-3 md:gap-4">
+                  <motion.div whileHover={{ scale: 1.05 }} className="p-3 md:p-6 rounded-lg bg-white border border-blue-100 text-center">
+                    <Droplets className="mx-auto mb-1 md:mb-2 text-blue-600" size={20} />
+                    <div className="text-xs md:text-sm text-gray-600 mb-1">{weather.humidity}%</div>
+                    <div className="text-xl md:text-3xl font-bold text-gray-900">Humidity</div>
                   </motion.div>
 
-                  <motion.div whileHover={{ scale: 1.05 }} className="p-6 rounded-lg bg-white border border-blue-100 text-center">
-                    <Wind className="mx-auto mb-2 text-blue-600" size={24} />
-                    <div className="text-sm text-gray-600 mb-2">Wind Speed</div>
-                    <div className="text-3xl font-bold text-gray-900">{Math.round(weather.windSpeed)} km/h</div>
+                  <motion.div whileHover={{ scale: 1.05 }} className="p-3 md:p-6 rounded-lg bg-white border border-blue-100 text-center">
+                    <Wind className="mx-auto mb-1 md:mb-2 text-blue-600" size={20} />
+                    <div className="text-xs md:text-sm text-gray-600 mb-1">{Math.round(weather.windSpeed)}</div>
+                    <div className="text-xl md:text-3xl font-bold text-gray-900">Wind</div>
                   </motion.div>
 
-                  <motion.div whileHover={{ scale: 1.05 }} className="p-6 rounded-lg bg-white border border-blue-100 text-center">
-                    <Cloud className="mx-auto mb-2 text-blue-600" size={24} />
-                    <div className="text-sm text-gray-600 mb-2">Cloud Cover</div>
-                    <div className="text-3xl font-bold text-gray-900">{weather.cloudCover}%</div>
+                  <motion.div whileHover={{ scale: 1.05 }} className="p-3 md:p-6 rounded-lg bg-white border border-blue-100 text-center">
+                    <Cloud className="mx-auto mb-1 md:mb-2 text-blue-600" size={20} />
+                    <div className="text-xs md:text-sm text-gray-600 mb-1">{weather.cloudCover}%</div>
+                    <div className="text-xl md:text-3xl font-bold text-gray-900">Cloud</div>
                   </motion.div>
 
-                  <motion.div whileHover={{ scale: 1.05 }} className="p-6 rounded-lg bg-white border border-blue-100 text-center">
-                    <Eye className="mx-auto mb-2 text-blue-600" size={24} />
-                    <div className="text-sm text-gray-600 mb-2">Visibility</div>
-                    <div className="text-3xl font-bold text-gray-900">{Math.round(weather.visibility)} km</div>
+                  <motion.div whileHover={{ scale: 1.05 }} className="p-3 md:p-6 rounded-lg bg-white border border-blue-100 text-center">
+                    <Eye className="mx-auto mb-1 md:mb-2 text-blue-600" size={20} />
+                    <div className="text-xs md:text-sm text-gray-600 mb-1">{Math.round(weather.visibility)}</div>
+                    <div className="text-xl md:text-3xl font-bold text-gray-900">Visibility</div>
                   </motion.div>
                 </div>
               </div>
@@ -399,29 +391,29 @@ export default function WeatherPage() {
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="p-6 rounded-lg bg-white border border-gray-200"
+                className="p-4 md:p-6 rounded-lg bg-white border border-gray-200"
               >
-                <h3 className="text-2xl font-semibold text-gray-900 mb-6">7-Day Forecast</h3>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                  {forecast.slice(0, 7).map((day, idx) => (
+                <h3 className="text-xl md:text-2xl font-semibold text-gray-900 mb-4 md:mb-6">7-Day Forecast</h3>
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-2 md:gap-4">
+                  {forecast.slice(0, 8).map((day, idx) => (
                     <motion.div
                       key={idx}
                       whileHover={{ scale: 1.05 }}
-                      className="p-4 rounded-lg bg-white border border-gray-200 hover:border-blue-200 hover:shadow-md transition-all text-center"
+                      className="p-3 md:p-4 rounded-lg bg-white border border-gray-200 hover:border-blue-200 hover:shadow-md transition-all text-center"
                     >
-                      <div className="text-sm text-gray-600 mb-2">
+                      <div className="text-xs md:text-sm text-gray-600 mb-1 md:mb-2">
                         {new Date(day.date).toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' })}
                       </div>
-                      <div className="text-4xl mb-3">{getWeatherIcon(day.weatherCode)}</div>
-                      <div className="text-sm text-gray-700 mb-3">{day.condition}</div>
-                      <div className="flex justify-center gap-2 mb-3">
-                        <div className="p-2 rounded-lg bg-red-50 border border-red-100">
-                          <div className="text-xs text-gray-600">Max</div>
-                          <div className="text-lg font-bold text-gray-900">{Math.round(day.maxTemp)}°</div>
+                      <div className="text-3xl md:text-4xl mb-2">{getWeatherIcon(day.weatherCode)}</div>
+                      <div className="text-xs md:text-sm text-gray-700 mb-2">{day.condition}</div>
+                      <div className="flex justify-center gap-1 md:gap-2 mb-2">
+                        <div className="p-1 md:p-2 rounded-lg bg-red-50 border border-red-100">
+                          <div className="text-xs text-gray-600">H</div>
+                          <div className="text-sm md:text-lg font-bold text-gray-900">{Math.round(day.maxTemp)}°</div>
                         </div>
-                        <div className="p-2 rounded-lg bg-blue-50 border border-blue-100">
-                          <div className="text-xs text-gray-600">Min</div>
-                          <div className="text-lg font-bold text-gray-900">{Math.round(day.minTemp)}°</div>
+                        <div className="p-1 md:p-2 rounded-lg bg-blue-50 border border-blue-100">
+                          <div className="text-xs text-gray-600">L</div>
+                          <div className="text-sm md:text-lg font-bold text-gray-900">{Math.round(day.minTemp)}°</div>
                         </div>
                       </div>
                       {day.precipitation > 0 && (

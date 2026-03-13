@@ -52,10 +52,17 @@ class NotificationService {
         console.log('✅ Service Worker registered successfully');
       } catch (err) {
         console.error('❌ Service Worker registration failed:', err);
+        // Continue anyway - browser notifications might still work
       }
 
-      // Request notification permission
-      await this.requestPermission();
+      // Request notification permission immediately
+      const hasPermission = await this.requestPermission();
+      
+      if (hasPermission) {
+        console.log('✅ Notification system initialized with permission');
+        // Try to subscribe to push notifications (if configured)
+        // This will gracefully fail if VAPID keys not configured
+      }
 
       return true;
     } catch (error) {
@@ -76,20 +83,27 @@ class NotificationService {
       }
 
       if (Notification.permission === 'denied') {
-        console.log('❌ Notification permission denied');
+        console.log('❌ Notification permission denied by user');
         this.notificationPermission = 'denied';
         return false;
       }
 
-      // Ask user for permission
+      // Permission is 'default' - ask the user
+      console.log('📢 Requesting notification permission...');
       const permission = await Notification.requestPermission();
       this.notificationPermission = permission;
 
       if (permission === 'granted') {
-        console.log('✅ Notification permission granted');
+        console.log('✅ Notification permission granted by user');
+        // Show a test notification
+        this.showNotification('Notifications Enabled!', {
+          body: 'You will now receive reminders and updates on this device.',
+          tag: 'notification-enabled'
+        });
         return true;
       }
 
+      console.log('ℹ️ User declined notification permission');
       return false;
     } catch (error) {
       console.error('❌ Failed to request notification permission:', error);

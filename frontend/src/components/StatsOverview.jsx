@@ -14,8 +14,8 @@ export default function StatsOverview() {
 
   useEffect(() => {
     loadStats()
-    // Refresh stats every 30 seconds
-    const interval = setInterval(loadStats, 30000)
+    // Refresh stats every 5 seconds for live updates
+    const interval = setInterval(loadStats, 5000)
     return () => clearInterval(interval)
   }, [])
 
