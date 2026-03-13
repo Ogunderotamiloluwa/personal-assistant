@@ -85,14 +85,22 @@ function DashboardContent() {
 
   const initializeNotifications = async () => {
     try {
+      console.log('🔔 Starting notification initialization...')
       const initialized = await notificationService.initialize()
       if (initialized) {
-        console.log('Notifications enabled');
+        console.log('✅ Notifications system ready');
         // Try to subscribe to push notifications
-        await notificationService.subscribeToPushNotifications(token)
+        const subscribed = await notificationService.subscribeToPushNotifications(token)
+        if (subscribed) {
+          console.log('✅ Subscribed to push notifications')
+        } else {
+          console.log('ℹ️ Push notifications not configured, using browser notifications')
+        }
+      } else {
+        console.log('⚠️ Notifications not supported in this browser')
       }
     } catch (error) {
-      console.log('ℹ️ Notifications not available:', error.message)
+      console.error('❌ Notification initialization error:', error.message)
     }
   }
 

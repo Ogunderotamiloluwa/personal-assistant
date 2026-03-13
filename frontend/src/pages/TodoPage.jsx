@@ -147,6 +147,9 @@ export default function TodoPage() {
   const handleCompleteTodo = async (todoId) => {
     try {
       const token = localStorage.getItem('token')
+      if (!token) throw new Error('No authentication token')
+      
+      console.log('📌 Completing todo:', todoId)
       const response = await fetch(`${API_URL}/api/todos/${todoId}/complete`, {
         method: 'POST',
         headers: {
@@ -155,26 +158,31 @@ export default function TodoPage() {
         }
       })
 
-      if (response.ok) {
-        const data = await response.json()
-        setTodos(todos.map(t => t.id === todoId ? data.todo : t))
-        addNotification({
-          type: 'success',
-          title: 'Todo Completed',
-          message: 'Great job, boss! Todo marked complete.'
-        })
-        
-        // Auto-delete after 2 seconds
-        setTimeout(() => {
-          handleDeleteTodo(todoId)
-        }, 2000)
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}))
+        throw new Error(errorData.error || `HTTP ${response.status}`)
       }
+
+      const data = await response.json()
+      console.log('✅ Todo completed:', data)
+      
+      setTodos(todos.map(t => t.id === todoId ? data.todo : t))
+      addNotification({
+        type: 'success',
+        title: 'Todo Completed',
+        message: 'Great job, boss! Todo marked complete.'
+      })
+      
+      // Auto-delete after 2 seconds
+      setTimeout(() => {
+        handleDeleteTodo(todoId)
+      }, 2000)
     } catch (err) {
-      console.error('Failed to complete todo:', err)
+      console.error('❌ Failed to complete todo:', err)
       addNotification({
         type: 'alert',
         title: 'Error',
-        message: 'Failed to complete todo'
+        message: `Failed to complete todo: ${err.message}`
       })
     }
   }
@@ -182,6 +190,9 @@ export default function TodoPage() {
   const handleDeleteTodo = async (todoId) => {
     try {
       const token = localStorage.getItem('token')
+      if (!token) throw new Error('No authentication token')
+      
+      console.log('🗑️ Deleting todo:', todoId)
       const response = await fetch(`${API_URL}/api/todos/${todoId}`, {
         method: 'DELETE',
         headers: {
@@ -190,20 +201,24 @@ export default function TodoPage() {
         }
       })
 
-      if (response.ok) {
-        setTodos(todos.filter(t => t.id !== todoId))
-        addNotification({
-          type: 'info',
-          title: 'Todo Deleted',
-          message: 'Todo removed from your list'
-        })
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}))
+        throw new Error(errorData.error || `HTTP ${response.status}`)
       }
+
+      console.log('✅ Todo deleted')
+      setTodos(todos.filter(t => t.id !== todoId))
+      addNotification({
+        type: 'info',
+        title: 'Todo Deleted',
+        message: 'Todo removed from your list'
+      })
     } catch (err) {
-      console.error('Failed to delete todo:', err)
+      console.error('❌ Failed to delete todo:', err)
       addNotification({
         type: 'alert',
         title: 'Error',
-        message: 'Failed to delete todo'
+        message: `Failed to delete todo: ${err.message}`
       })
     }
   }
