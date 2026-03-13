@@ -215,9 +215,9 @@ function DashboardContent() {
         {/* Header */}
         <Header />
 
-        {/* Main Content */}
-        <main className="flex-1 overflow-y-auto">
-          <div className="p-4 sm:p-6 max-w-7xl mx-auto w-full">
+        {/* Main Content - Scrollable on all devices */}
+        <main className="flex-1 overflow-y-auto overflow-x-hidden">
+          <div className="min-h-max p-4 md:p-6 max-w-7xl mx-auto w-full pb-12">
             {/* Todo Reminder at Top */}
             <motion.div
               initial={{ opacity: 0, y: -20 }}
@@ -230,8 +230,8 @@ function DashboardContent() {
             {/* Live Stats Overview */}
             <StatsOverview />
 
-            {/* Main Grid */}
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            {/* Main Grid - Stack on mobile, grid on desktop */}
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 md:gap-6">
             {/* Left Column - Messages & Chat (2 cols on large screens) */}
             <div className="lg:col-span-2 space-y-6">
               {/* Boss Commands Component */}
@@ -266,7 +266,7 @@ function DashboardContent() {
               </div>
 
               {/* Right Column - Stats & Weather */}
-              <div className="space-y-6 max-h-[calc(100vh-150px)] overflow-y-auto pr-2">
+              <div className="space-y-6 lg:max-h-[calc(100vh-150px)] lg:overflow-y-auto pr-0 lg:pr-2">
                 {/* Active Habits Widget */}
                 <motion.div
                   initial={{ opacity: 0, y: 20 }}
@@ -287,7 +287,7 @@ function DashboardContent() {
                   </div>
 
                   {/* Habits Grid */}
-                  <div className="space-y-3 max-h-64 overflow-y-auto">
+                  <div className="space-y-3 lg:max-h-64 lg:overflow-y-auto">
                     <AnimatePresence>
                       {habits.map((habit) => (
                         <HabitCard
