@@ -59,36 +59,6 @@ export default function Sidebar() {
         ))}
       </nav>
 
-      {/* Theme Toggle */}
-      <div className={`py-3 border-t border-b space-y-3 ${
-        theme === 'dark'
-          ? 'border-gray-700'
-          : 'border-gray-200'
-      }`}>
-        <motion.button
-          whileHover={{ scale: 1.02 }}
-          whileTap={{ scale: 0.98 }}
-          onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
-          className={`w-full py-2 px-4 rounded-lg border font-semibold text-sm transition-all flex items-center justify-center gap-2 ${
-            theme === 'dark'
-              ? 'border-gray-700 text-gray-300 hover:text-blue-600 hover:bg-gray-800'
-              : 'border-gray-300 text-gray-700 hover:text-blue-600 hover:bg-blue-50'
-          }`}
-        >
-          {theme === 'dark' ? (
-            <>
-              <Sun size={16} />
-              Light Mode
-            </>
-          ) : (
-            <>
-              <Moon size={16} />
-              Dark Mode
-            </>
-          )}
-        </motion.button>
-      </div>
-
       {/* Footer */}
       <div className="pt-6 border-t border-glass-border space-y-3">
         <motion.button
