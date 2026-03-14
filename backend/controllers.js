@@ -587,9 +587,14 @@ const getTodos = async (req, res) => {
         const mongoTodos = await Todo.find({ userId }).maxTimeMS(5000);
         if (mongoTodos) {
           console.log('✅ Fetched', mongoTodos.length, 'todos from MongoDB');
+          // Transform MongoDB docs: map _id to id for frontend compatibility
+          const transformedTodos = mongoTodos.map(todo => ({
+            ...todo.toObject ? todo.toObject() : todo,
+            id: todo._id.toString() // Use string ID from MongoDB
+          }));
           return res.json({ 
             message: 'Todos retrieved', 
-            todos: mongoTodos
+            todos: transformedTodos
           });
         }
       } catch (err) {
@@ -672,92 +677,215 @@ const createTodo = async (req, res) => {
   }
 };
 
-const updateTodo = (req, res) => {
-  const { id } = req.params;
-  const { title, description, scheduledTime, location, riskLevel } = req.body;
+const updateTodo = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const userId = req.userId;
+    const { title, description, scheduledTime, location, riskLevel } = req.body;
 
-  const todo = todos.find(t => t.id === parseInt(id) && t.userId === req.userId);
-  if (!todo) {
-    return res.status(404).json({ error: 'Todo not found' });
-  }
-
-  if (title) todo.title = title;
-  if (description) todo.description = description;
-  if (scheduledTime) todo.scheduledTime = new Date(scheduledTime).toISOString();
-  if (location) todo.location = location;
-  if (riskLevel) todo.riskLevel = riskLevel;
-
-  todo.updatedAt = new Date().toISOString();
-  storage.setTodos(todos); // Persist to storage
-
-  res.json({
-    message: 'Todo updated',
-    todo
-  });
-};
-
-const completeTodo = (req, res) => {
-  const { id } = req.params;
-
-  const todo = todos.find(t => t.id === parseInt(id) && t.userId === req.userId);
-  if (!todo) {
-    return res.status(404).json({ error: 'Todo not found' });
-  }
-
-  todo.completed = true;
-  todo.completedAt = new Date().toISOString();
-  todo.updatedAt = new Date().toISOString();
-  storage.setTodos(todos); // Persist to storage
-
-  // Send push notification
-  (async () => {
-    try {
-      const userSubscriptions = notificationSubscriptions[req.userId] || [];
-      if (userSubscriptions.length > 0) {
-        const notificationPayload = JSON.stringify({
-          title: 'Todo Completed',
-          body: `${todo.title} done. One less thing to worry about.`,
-          icon: '/favicon.ico',
-          badge: '/favicon.ico',
-          tag: 'todo-complete',
-          data: {
-            type: 'todo-complete',
-            todoId: parseInt(id),
-            timestamp: new Date().toISOString()
-          },
-          actions: [
-            { action: 'open', title: 'View Todos' }
-          ]
-        });
-
-        for (const subscription of userSubscriptions) {
-          webpush.sendNotification(subscription, notificationPayload).catch(error => {
-            console.error('[PUSH] Failed to send todo completion notification:', error.message);
+    // Try MongoDB first
+    if (isConnected && isConnected()) {
+      try {
+        const todo = await Todo.findById(id);
+        if (todo && todo.userId === userId) {
+          if (title) todo.title = title;
+          if (description) todo.description = description;
+          if (scheduledTime) todo.scheduledTime = new Date(scheduledTime).toISOString();
+          if (location) todo.location = location;
+          if (riskLevel) todo.riskLevel = riskLevel;
+          todo.updatedAt = new Date().toISOString();
+          
+          const saved = await todo.save();
+          console.log('✅ Todo updated in MongoDB');
+          return res.json({
+            message: 'Todo updated',
+            todo: {
+              ...saved.toObject?.() || saved,
+              id: saved._id.toString()
+            }
           });
         }
+      } catch (err) {
+        console.log('⚠️ MongoDB update failed, trying file storage:', err.message);
       }
-    } catch (error) {
-      console.error('[PUSH] Error sending todo notification:', error);
     }
-  })();
 
-  res.json({
-    message: 'Todo completed',
-    todo
-  });
+    // Fallback to file storage (handle both numeric and string IDs)
+    const numericId = parseInt(id);
+    const todo = todos.find(t => (t.id === numericId || t.id === id) && t.userId === userId);
+    if (!todo) {
+      return res.status(404).json({ error: 'Todo not found' });
+    }
+
+    if (title) todo.title = title;
+    if (description) todo.description = description;
+    if (scheduledTime) todo.scheduledTime = new Date(scheduledTime).toISOString();
+    if (location) todo.location = location;
+    if (riskLevel) todo.riskLevel = riskLevel;
+
+    todo.updatedAt = new Date().toISOString();
+    storage.setTodos(todos);
+    console.log('✅ Todo updated in file storage');
+
+    res.json({
+      message: 'Todo updated',
+      todo
+    });
+  } catch (err) {
+    console.error('❌ Error updating todo:', err);
+    res.status(500).json({ error: 'Failed to update todo' });
+  }
 };
 
-const deleteTodo = (req, res) => {
-  const { id } = req.params;
+const completeTodo = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const userId = req.userId;
 
-  const index = todos.findIndex(t => t.id === parseInt(id) && t.userId === req.userId);
-  if (index === -1) {
-    return res.status(404).json({ error: 'Todo not found' });
+    // Try MongoDB first
+    if (isConnected && isConnected()) {
+      try {
+        const todo = await Todo.findById(id);
+        if (todo && todo.userId === userId) {
+          todo.completed = true;
+          todo.completedAt = new Date().toISOString();
+          todo.updatedAt = new Date().toISOString();
+          const saved = await todo.save();
+          console.log('✅ Todo completed in MongoDB');
+
+          // Send push notification
+          (async () => {
+            try {
+              const userSubscriptions = notificationSubscriptions[userId] || [];
+              if (userSubscriptions.length > 0) {
+                const notificationPayload = JSON.stringify({
+                  title: 'Todo Completed',
+                  body: `${todo.title} done. One less thing to worry about.`,
+                  icon: '/favicon.ico',
+                  badge: '/favicon.ico',
+                  tag: 'todo-complete',
+                  data: {
+                    type: 'todo-complete',
+                    todoId: id,
+                    timestamp: new Date().toISOString()
+                  },
+                  actions: [
+                    { action: 'open', title: 'View Todos' }
+                  ]
+                });
+
+                for (const subscription of userSubscriptions) {
+                  webpush.sendNotification(subscription, notificationPayload).catch(error => {
+                    console.error('[PUSH] Failed to send todo completion notification:', error.message);
+                  });
+                }
+              }
+            } catch (error) {
+              console.error('[PUSH] Error sending todo notification:', error);
+            }
+          })();
+
+          return res.json({
+            message: 'Todo completed',
+            todo: {
+              ...saved.toObject?.() || saved,
+              id: saved._id.toString()
+            }
+          });
+        }
+      } catch (err) {
+        console.log('⚠️ MongoDB completion failed, trying file storage:', err.message);
+      }
+    }
+
+    // Fallback to file storage (handle both numeric and string IDs)
+    const numericId = parseInt(id);
+    const todo = todos.find(t => (t.id === numericId || t.id === id) && t.userId === userId);
+    if (!todo) {
+      return res.status(404).json({ error: 'Todo not found' });
+    }
+
+    todo.completed = true;
+    todo.completedAt = new Date().toISOString();
+    todo.updatedAt = new Date().toISOString();
+    storage.setTodos(todos);
+    console.log('✅ Todo completed in file storage');
+
+    // Send push notification
+    (async () => {
+      try {
+        const userSubscriptions = notificationSubscriptions[userId] || [];
+        if (userSubscriptions.length > 0) {
+          const notificationPayload = JSON.stringify({
+            title: 'Todo Completed',
+            body: `${todo.title} done. One less thing to worry about.`,
+            icon: '/favicon.ico',
+            badge: '/favicon.ico',
+            tag: 'todo-complete',
+            data: {
+              type: 'todo-complete',
+              todoId: todo.id,
+              timestamp: new Date().toISOString()
+            },
+            actions: [
+              { action: 'open', title: 'View Todos' }
+            ]
+          });
+
+          for (const subscription of userSubscriptions) {
+            webpush.sendNotification(subscription, notificationPayload).catch(error => {
+              console.error('[PUSH] Failed to send todo completion notification:', error.message);
+            });
+          }
+        }
+      } catch (error) {
+        console.error('[PUSH] Error sending todo notification:', error);
+      }
+    })();
+
+    res.json({
+      message: 'Todo completed',
+      todo
+    });
+  } catch (err) {
+    console.error('❌ Error completing todo:', err);
+    res.status(500).json({ error: 'Failed to complete todo' });
   }
+};
 
-  todos.splice(index, 1);
-  storage.setTodos(todos); // Persist to storage
-  res.json({ message: 'Todo deleted' });
+const deleteTodo = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const userId = req.userId;
+
+    // Try MongoDB first
+    if (isConnected && isConnected()) {
+      try {
+        const result = await Todo.findByIdAndDelete(id);
+        if (result) {
+          console.log('✅ Todo deleted from MongoDB');
+          return res.json({ message: 'Todo deleted' });
+        }
+      } catch (err) {
+        console.log('⚠️ MongoDB delete failed, trying file storage:', err.message);
+      }
+    }
+
+    // Fallback to file storage (handle both numeric and string IDs)
+    const numericId = parseInt(id);
+    const index = todos.findIndex(t => (t.id === numericId || t.id === id) && t.userId === userId);
+    if (index === -1) {
+      return res.status(404).json({ error: 'Todo not found' });
+    }
+
+    todos.splice(index, 1);
+    storage.setTodos(todos);
+    console.log('✅ Todo deleted from file storage');
+    res.json({ message: 'Todo deleted' });
+  } catch (err) {
+    console.error('❌ Error deleting todo:', err);
+    res.status(500).json({ error: 'Failed to delete todo' });
+  }
 };
 
 // Suggestions Controller
