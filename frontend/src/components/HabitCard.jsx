@@ -95,7 +95,7 @@ export default function HabitCard({ habit, onComplete, onDelete }) {
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
           onClick={handleComplete}
-          className="flex-1 py-2 px-3 rounded-lg bg-gradient-to-r from-command-gold to-command-cobalt text-command-dark text-xs font-semibold hover:shadow-lg transition-all"
+          className="flex-1 py-2 px-3 rounded-lg bg-gradient-to-r from-blue-600 to-indigo-600 text-white text-xs font-semibold hover:shadow-lg hover:from-blue-700 hover:to-indigo-700 transition-all"
         >
           Mark Complete
         </motion.button>

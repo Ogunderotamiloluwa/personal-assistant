@@ -604,13 +604,20 @@ const getTodos = async (req, res) => {
     
     // Fallback to file storage
     console.log('📂 Fetching todos from file storage');
-    const userTodos = todos.filter(t => t.userId === userId).map(todo => ({
-      ...todo,
-      // Migrate old field names to new format for backward compatibility
-      scheduledTime: todo.scheduledTime || (todo.dueDate && todo.dueTime ? new Date(`${todo.dueDate} ${todo.dueTime}`).toISOString() : new Date().toISOString()),
-      riskLevel: todo.riskLevel || (todo.priority ? (todo.priority === 'high' ? 'high' : todo.priority === 'low' ? 'low' : 'medium') : 'low'),
-      location: todo.location || todo.category || ''
-    }));
+    const userTodos = todos.filter(t => t.userId === userId).map(todo => {
+      const transformed = {
+        ...todo,
+        // Ensure id field exists
+        id: todo.id || todo._id?.toString() || Date.now(),
+        // Migrate old field names to new format for backward compatibility
+        scheduledTime: todo.scheduledTime || (todo.dueDate && todo.dueTime ? new Date(`${todo.dueDate} ${todo.dueTime}`).toISOString() : new Date().toISOString()),
+        riskLevel: todo.riskLevel || (todo.priority ? (todo.priority === 'high' ? 'high' : todo.priority === 'low' ? 'low' : 'medium') : 'low'),
+        location: todo.location || todo.category || ''
+      };
+      console.log('📌 Todo mapped:', transformed.id, transformed.title);
+      return transformed;
+    });
+    console.log('📊 Returning', userTodos.length, 'todos from file storage');
     res.json({ 
       message: 'Todos retrieved',
       todos: userTodos
@@ -649,7 +656,10 @@ const createTodo = async (req, res) => {
         console.log('✅ Todo saved to MongoDB');
         return res.status(201).json({
           message: 'Todo created',
-          todo: saved
+          todo: {
+            ...saved.toObject?.() || saved,
+            id: saved._id?.toString() || saved._id
+          }
         });
       } catch (err) {
         console.log('⚠️ MongoDB save failed, using file storage:', err.message);
@@ -666,7 +676,12 @@ const createTodo = async (req, res) => {
     };
 
     todos.push(todo);
-    storage.setTodos(todos);
+    const saved = storage.setTodos(todos);
+    if (!saved) {
+      console.error('❌ Failed to save todo to file storage');
+      return res.status(500).json({ error: 'Failed to save todo' });
+    }
+    console.log('✅ Todo saved to file storage with id:', todo.id);
     res.status(201).json({
       message: 'Todo created',
       todo

@@ -80,13 +80,13 @@ export function AuthProvider({ children }) {
       const savedToken = localStorage.getItem('token')
       
       if (savedToken) {
-        // Try to verify token with 1.5 second timeout (Netlify is usually fast if API is available)
+        // Try to verify token with 5 second timeout (allows for slower backends)
         const verifyPromise = verifyToken(savedToken)
         const timeoutPromise = new Promise(resolve => 
           setTimeout(() => {
             console.log('Token verification timeout - API may be down');
             resolve(false)
-          }, 1500)
+          }, 5000)
         )
         
         const isValid = await Promise.race([verifyPromise, timeoutPromise])
