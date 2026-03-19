@@ -1,0 +1,35 @@
+{
+  "name": "Personal Assistant - Command Center",
+  "short_name": "PA Assistant",
+  "description": "Your digital personal assistant for habits, todos, and routines",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "theme_color": "#0f1419",
+  "background_color": "#000000",
+  "screenshots": [
+    {
+      "src": "/favicon.ico",
+      "sizes": "512x512",
+      "type": "image/x-icon"
+    }
+  ],
+  "icons": [
+    {
+      "src": "/favicon.ico",
+      "sizes": "any",
+      "type": "image/x-icon",
+      "purpose": "any"
+    }
+  ],
+  "categories": ["productivity"],
+  "screenshots": [
+    {
+      "src": "/favicon.ico",
+      "type": "image/x-icon",
+      "sizes": "192x192",
+      "form_factor": "narrow"
+    }
+  ]
+}
