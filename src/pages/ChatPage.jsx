@@ -21,6 +21,17 @@ export default function ChatPage() {
     scrollToBottom()
   }, [messages])
 
+  const suggestions = [
+    { text: 'Check my routines', query: 'What are my routines?' },
+    { text: 'Show my todos', query: 'What are my todos?' },
+    { text: 'Check my habits', query: 'What are my habits?' },
+    { text: 'Get motivated', query: 'Motivate me!' }
+  ]
+
+  const handleSuggestClick = (query) => {
+    setInput(query)
+  }
+
   const handleSendMessage = async (e) => {
     e.preventDefault()
 
@@ -113,6 +124,29 @@ export default function ChatPage() {
 
       {/* Messages Container */}
       <div className="flex-1 max-w-4xl mx-auto w-full px-3 sm:px-4 py-4 sm:py-8 overflow-y-auto">
+        {messages.length === 1 && (
+          <div className="mb-8">
+            <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">AI Recommendations</h2>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div className="p-4 bg-blue-50 dark:bg-gray-700 rounded-lg border border-blue-200 dark:border-gray-600">
+                <p className="text-gray-700 dark:text-gray-300 text-sm">📅 Boss, it's time to check your morning routine!</p>
+              </div>
+              <div className="p-4 bg-blue-50 dark:bg-gray-700 rounded-lg border border-blue-200 dark:border-gray-600">
+                <p className="text-gray-700 dark:text-gray-300 text-sm">✅ Boss, you've been doing great with your habits. Keep it up!</p>
+              </div>
+              <div className="p-4 bg-blue-50 dark:bg-gray-700 rounded-lg border border-blue-200 dark:border-gray-600">
+                <p className="text-gray-700 dark:text-gray-300 text-sm">😊 Boss, don't forget to log your mood today.</p>
+              </div>
+              <div className="p-4 bg-blue-50 dark:bg-gray-700 rounded-lg border border-blue-200 dark:border-gray-600">
+                <p className="text-gray-700 dark:text-gray-300 text-sm">🔥 Boss, you're 2 days away from a 7-day streak. Push it!</p>
+              </div>
+              <div className="p-4 bg-blue-50 dark:bg-gray-700 rounded-lg border border-blue-200 dark:border-gray-600">
+                <p className="text-gray-700 dark:text-gray-300 text-sm">⏸️ Boss, take a 5-minute break and meditate.</p>
+              </div>
+            </div>
+          </div>
+        )}
+        
         {messages.map((msg) => (
           <div key={msg.id} className={`flex mb-4 sm:mb-6 ${msg.isAI ? 'justify-start' : 'justify-end'}`}>
             <div
@@ -150,6 +184,21 @@ export default function ChatPage() {
           {error && (
             <div className="mb-3 p-2 sm:p-3 rounded-lg bg-red-50 dark:bg-red-900 border border-red-200 dark:border-red-700 text-red-700 dark:text-red-100 text-xs sm:text-sm">
               {error}
+            </div>
+          )}
+
+          {messages.length === 1 && (
+            <div className="mb-4 grid grid-cols-2 gap-2 sm:grid-cols-4">
+              {suggestions.map((suggest, idx) => (
+                <button
+                  key={idx}
+                  onClick={() => handleSuggestClick(suggest.query)}
+                  disabled={loading}
+                  className="px-2 sm:px-3 py-2 text-xs sm:text-sm rounded-lg bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-200 font-medium hover:bg-blue-200 dark:hover:bg-blue-800 transition-colors disabled:opacity-50 whitespace-nowrap overflow-hidden text-ellipsis"
+                >
+                  {suggest.text}
+                </button>
+              ))}
             </div>
           )}
 
