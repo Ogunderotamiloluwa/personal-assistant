@@ -14,8 +14,20 @@ export default function TodoCard({ todo, onComplete, onDelete, onEdit, userLocat
 
   useEffect(() => {
     const updateTimeLeft = () => {
+      if (!todo.scheduledTime) {
+        setTimeLeft('No time set');
+        return;
+      }
+      
       const now = new Date();
       const todoTime = new Date(todo.scheduledTime);
+      
+      // Handle invalid dates
+      if (isNaN(todoTime.getTime())) {
+        setTimeLeft('Invalid date');
+        return;
+      }
+      
       const diff = todoTime - now;
 
       if (diff < 0) {
@@ -43,9 +55,9 @@ export default function TodoCard({ todo, onComplete, onDelete, onEdit, userLocat
   // Handle undefined riskLevel with fallback
   const riskLevel = todo.riskLevel || 'low';
   const riskStyle = RISK_COLORS[riskLevel];
-  const todoTime = new Date(todo.scheduledTime);
+  const todoTime = todo.scheduledTime ? new Date(todo.scheduledTime) : null;
   const now = new Date();
-  const isNearTime = (todoTime - now) < 15 * 60000;
+  const isNearTime = todoTime && !isNaN(todoTime.getTime()) && (todoTime - now) < 15 * 60000;
 
   return (
     <motion.div
@@ -84,10 +96,12 @@ export default function TodoCard({ todo, onComplete, onDelete, onEdit, userLocat
         <div className="flex items-center gap-2 text-gray-600">
           <Clock size={16} className="flex-shrink-0 text-blue-600" />
           <span className={`${isNearTime || isOverdue ? 'font-semibold text-red-700' : ''}`}>
-            {todoTime.toLocaleString('en-US', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })}
+            {todoTime && !isNaN(todoTime.getTime()) 
+              ? todoTime.toLocaleString('en-US', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })
+              : 'Invalid Date'}
           </span>
           <span className={`ml-auto font-medium flex-shrink-0 ${isOverdue ? 'text-red-700' : 'text-gray-500'}`}>
-            {timeLeft?.replace('minutes', 'm')?.replace('hours', 'h')}
+            {timeLeft}
           </span>
         </div>
 
@@ -113,7 +127,7 @@ export default function TodoCard({ todo, onComplete, onDelete, onEdit, userLocat
           whileHover={{ scale: 1.02 }}
           whileTap={{ scale: 0.98 }}
           onClick={() => onComplete(todo.id)}
-          className="flex-1 py-2 px-3 rounded-lg text-xs sm:text-sm bg-green-600 text-white font-semibold hover:bg-green-700 transition-colors flex items-center justify-center gap-2"
+          className="flex-1 py-2 px-3 rounded-lg text-xs sm:text-sm bg-green-600 text-white font-semibold hover:bg-green-700 active:bg-green-800 shadow-md hover:shadow-lg transition-all flex items-center justify-center gap-2"
         >
           <CheckCircle2 size={16} />
           <span className="hidden sm:inline">Complete</span>

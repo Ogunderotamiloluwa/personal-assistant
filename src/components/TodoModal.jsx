@@ -40,7 +40,17 @@ export default function TodoModal({ isOpen, onClose, onSave, todo = null }) {
 
     setSaving(true)
     try {
-      await onSave(formData)
+      // Convert datetime-local to ISO string
+      const scheduledDate = new Date(formData.scheduledTime);
+      const isoString = scheduledDate.toISOString();
+      
+      const dataToSave = {
+        ...formData,
+        scheduledTime: isoString
+      };
+      
+      console.log('📝 Saving todo with scheduledTime:', isoString);
+      await onSave(dataToSave)
       setFormData(defaultFormData)
     } catch (err) {
       setError(err.message || 'Failed to save todo')
@@ -125,7 +135,7 @@ export default function TodoModal({ isOpen, onClose, onSave, todo = null }) {
             <input
               type="datetime-local"
               name="scheduledTime"
-              value={formData.scheduledTime.slice(0, 16)}
+              value={formData.scheduledTime && typeof formData.scheduledTime === 'string' ? formData.scheduledTime.slice(0, 16) : (new Date().toISOString().slice(0, 16))}
               onChange={handleInputChange}
               className="w-full px-4 py-2.5 rounded-lg bg-gray-50 border border-gray-300 text-gray-900 focus:border-blue-500 focus:bg-white focus:outline-none transition-all"
             />
