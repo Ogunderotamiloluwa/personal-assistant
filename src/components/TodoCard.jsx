@@ -130,8 +130,7 @@ export default function TodoCard({ todo, onComplete, onDelete, onEdit, userLocat
           className="flex-1 py-2 px-3 rounded-lg text-xs sm:text-sm bg-green-600 text-white font-semibold hover:bg-green-700 active:bg-green-800 shadow-md hover:shadow-lg transition-all flex items-center justify-center gap-2"
         >
           <CheckCircle2 size={16} />
-          <span className="hidden sm:inline">Complete</span>
-          <span className="sm:hidden">Done</span>
+          <span>Done</span>
         </motion.button>
         <motion.button
           whileHover={{ scale: 1.02 }}

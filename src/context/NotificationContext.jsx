@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useCallback } from 'react'
+import React, { createContext, useContext, useState, useCallback, useEffect } from 'react'
 
 const NotificationContext = createContext()
 
@@ -15,11 +15,11 @@ export const NotificationProvider = ({ children }) => {
 
     setNotifications(prev => [newNotification, ...prev])
 
-    // Auto-dismiss after 5 seconds
+    // Auto-dismiss after 8 seconds (give user time to read)
     if (notification.autoDismiss !== false) {
       setTimeout(() => {
         removeNotification(id)
-      }, 5000)
+      }, 8000)
     }
 
     return id
@@ -32,6 +32,33 @@ export const NotificationProvider = ({ children }) => {
   const clearAll = useCallback(() => {
     setNotifications([])
   }, [])
+
+  // Listen for incoming notifications from Service Worker
+  useEffect(() => {
+    if (!('serviceWorker' in navigator)) return;
+
+    const handleServiceWorkerMessage = (event) => {
+      console.log('📨 Message from Service Worker:', event.data);
+      
+      if (event.data.type === 'NOTIFICATION_RECEIVED') {
+        const { title, body, type } = event.data;
+        console.log(`📢 Adding in-app notification: ${title}`);
+        
+        addNotification({
+          type: type || 'alert',
+          title: title,
+          message: body,
+          autoDismiss: true,
+          icon: type === 'todo' ? '📋' : type === 'habit' ? '🎯' : type === 'routine' ? '📅' : '⏰'
+        });
+      }
+    };
+
+    navigator.serviceWorker.addEventListener('message', handleServiceWorkerMessage);
+    return () => {
+      navigator.serviceWorker.removeEventListener('message', handleServiceWorkerMessage);
+    };
+  }, [addNotification])
 
   return (
     <NotificationContext.Provider

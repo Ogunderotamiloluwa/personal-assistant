@@ -55,13 +55,14 @@ class NotificationService {
         // Continue anyway - browser notifications might still work
       }
 
-      // Request notification permission immediately
+      // Request notification permission IMMEDIATELY
+      console.log('📢 Requesting notification permission from user...');
       const hasPermission = await this.requestPermission();
       
       if (hasPermission) {
-        console.log('✅ Notification system initialized with permission');
-        // Try to subscribe to push notifications (if configured)
-        // This will gracefully fail if VAPID keys not configured
+        console.log('✅ Notification system fully initialized with user permission');
+      } else {
+        console.log('⚠️ Notifications disabled - user declined permission');
       }
 
       return true;
@@ -89,17 +90,24 @@ class NotificationService {
       }
 
       // Permission is 'default' - ask the user
-      console.log('📢 Requesting notification permission...');
+      console.log('📢 Requesting notification permission from user...');
       const permission = await Notification.requestPermission();
       this.notificationPermission = permission;
 
+      console.log(`📋 User responded with permission: ${permission}`);
+
       if (permission === 'granted') {
-        console.log('✅ Notification permission granted by user');
-        // Show a test notification
-        this.showNotification('Notifications Enabled!', {
-          body: 'You will now receive reminders and updates on this device.',
-          tag: 'notification-enabled'
-        });
+        console.log('✅ Notification permission granted by user - notifications ready!');
+        // Show a test notification via Service Worker to verify it works
+        if (this.serviceWorkerRegistration) {
+          this.serviceWorkerRegistration.showNotification('Notifications Enabled! ✅', {
+            body: 'You will now receive reminders and updates on this device.',
+            tag: 'notification-enabled',
+            requireInteraction: true,
+            icon: '/favicon.ico',
+            badge: '/favicon.ico'
+          });
+        }
         return true;
       }
 
@@ -180,16 +188,32 @@ class NotificationService {
    */
   async subscribeToPushNotifications(token) {
     try {
+      console.log('🔄 Starting push notification subscription process...');
+      
       if (!this.serviceWorkerRegistration) {
         console.log('⚠️ Service Worker not registered - push notifications unavailable');
         return false;
       }
 
+      // Check current notification permission
+      const permissionStatus = Notification.permission;
+      console.log(`📋 Current notification permission: ${permissionStatus}`);
+
+      if (permissionStatus !== 'granted') {
+        console.log('⚠️ Notification permission not granted - cannot subscribe to push');
+        // Try to request permission again
+        const granted = await this.requestPermission();
+        if (!granted) {
+          return false;
+        }
+      }
+
       // Get VAPID public key from environment
       const vapidPublicKey = import.meta.env.VITE_VAPID_PUBLIC_KEY;
+      console.log(`🔑 VAPID key present: ${!!vapidPublicKey}`);
 
       if (!vapidPublicKey) {
-        console.log('ℹ️ VAPID key not configured - Push notifications disabled (will use browser notifications only)');
+        console.log('ℹ️ VAPID key not configured - Push notifications disabled');
         return false;
       }
 
@@ -202,24 +226,32 @@ class NotificationService {
       // Get existing subscription
       let subscription = await this.serviceWorkerRegistration.pushManager.getSubscription();
 
-      if (!subscription) {
+      if (subscription) {
+        console.log('ℹ️ Using existing push subscription');
+        console.log(`📋 Subscription endpoint: ${subscription.endpoint}`);
+      } else {
         // Create new subscription with VAPID key
+        console.log('🔐 Creating new push subscription with VAPID key...');
         const subscriptionOptions = {
           userVisibleOnly: true,
           applicationServerKey: this.urlBase64ToUint8Array(vapidPublicKey)
         };
 
-        subscription = await this.serviceWorkerRegistration.pushManager.subscribe(subscriptionOptions);
-        console.log('✅ Push subscription created successfully');
-      } else {
-        console.log('ℹ️ Using existing push subscription');
+        try {
+          subscription = await this.serviceWorkerRegistration.pushManager.subscribe(subscriptionOptions);
+          console.log('✅ Push subscription created successfully');
+          console.log(`📋 Subscription endpoint: ${subscription.endpoint}`);
+        } catch (subError) {
+          console.error('❌ Failed to create push subscription:', subError);
+          return false;
+        }
       }
 
       // Save subscription to backend
       const saved = await this.savePushSubscription(subscription, token);
 
       if (saved) {
-        console.log('✅ Push notification subscription successful');
+        console.log('✅ Push notification subscription complete - you will receive background notifications!');
         return true;
       } else {
         console.log('⚠️ Failed to save push subscription to backend');
@@ -227,7 +259,7 @@ class NotificationService {
       }
     } catch (error) {
       console.error('❌ Push subscription error:', error.message);
-      console.log('ℹ️ Push notifications unavailable, browser notifications will work instead');
+      console.log('ℹ️ Browser notifications will still work for alerts on this tab');
       return false;
     }
   }

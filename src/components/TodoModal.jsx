@@ -8,11 +8,22 @@ const RISK_LEVELS = [
   { value: 'high', label: 'High Risk', color: 'red', icon: '🚨' }
 ]
 
+// Helper to convert Date to local datetime-local format (YYYY-MM-DDTHH:mm)
+const getLocalDateTimeString = (date = null) => {
+  const d = date ? new Date(date) : new Date();
+  const year = d.getFullYear();
+  const month = String(d.getMonth() + 1).padStart(2, '0');
+  const day = String(d.getDate()).padStart(2, '0');
+  const hours = String(d.getHours()).padStart(2, '0');
+  const minutes = String(d.getMinutes()).padStart(2, '0');
+  return `${year}-${month}-${day}T${hours}:${minutes}`;
+};
+
 export default function TodoModal({ isOpen, onClose, onSave, todo = null }) {
   const defaultFormData = {
     title: '',
     description: '',
-    scheduledTime: new Date().toISOString().slice(0, 16),
+    scheduledTime: getLocalDateTimeString(),
     location: '',
     riskLevel: 'low'
   }
@@ -135,7 +146,7 @@ export default function TodoModal({ isOpen, onClose, onSave, todo = null }) {
             <input
               type="datetime-local"
               name="scheduledTime"
-              value={formData.scheduledTime && typeof formData.scheduledTime === 'string' ? formData.scheduledTime.slice(0, 16) : (new Date().toISOString().slice(0, 16))}
+              value={formData.scheduledTime}
               onChange={handleInputChange}
               className="w-full px-4 py-2.5 rounded-lg bg-gray-50 border border-gray-300 text-gray-900 focus:border-blue-500 focus:bg-white focus:outline-none transition-all"
             />

@@ -46,6 +46,15 @@ export default function RoutineCard({ routine, onDelete, onEdit, onComplete }) {
           
           {/* Time and Days */}
           <div className="flex items-center gap-2 md:gap-4 mt-2 text-xs text-gray-500 flex-wrap">
+            {routine.scheduledTime && (
+              <div className="flex items-center gap-1 px-2 py-0.5 rounded-full bg-blue-100 text-blue-700 text-xs font-medium">
+                <Clock size={12} className="md:w-4 md:h-4" />
+                <span>
+                  {new Date(routine.scheduledTime).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })} at{' '}
+                  {new Date(routine.scheduledTime).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true })}
+                </span>
+              </div>
+            )}
             <div className="flex items-center gap-1">
               <Clock size={12} className="md:w-4 md:h-4" />
               <span>{routine.time}</span>

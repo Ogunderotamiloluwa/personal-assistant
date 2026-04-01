@@ -1,11 +1,23 @@
 import React, { useState } from 'react'
 import { motion } from 'framer-motion'
-import { X, Plus, AlertCircle, Cloud, Droplets, Sun } from 'lucide-react'
+import { X, Plus, AlertCircle } from 'lucide-react'
 
 const HABIT_ICONS = ['🎯', '📚', '💪', '🧘', '🚴', '🏃', '💤', '📝', '🎨', '🎵', '⚽', '🏊', '🧗']
 const HABIT_COLORS = ['#d4af37', '#ff6b6b', '#4ecdc4', '#45b7d1', '#96ceb4', '#ffeaa7', '#dfe6e9', '#a29bfe', '#74b9ff', '#81ecec']
 const DAYS_OF_WEEK = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
 const HABIT_CATEGORIES = ['Fitness', 'Learning', 'Wellness', 'Sport', 'Music', 'Creative', 'Other']
+const FREQUENCY_OPTIONS = ['daily', 'weekly', 'monthly']
+
+// Helper to convert Date to local datetime-local format
+function getLocalDateTimeString(date = new Date()) {
+  const d = new Date(date);
+  const year = d.getFullYear();
+  const month = String(d.getMonth() + 1).padStart(2, '0');
+  const day = String(d.getDate()).padStart(2, '0');
+  const hours = String(d.getHours()).padStart(2, '0');
+  const minutes = String(d.getMinutes()).padStart(2, '0');
+  return `${year}-${month}-${day}T${hours}:${minutes}`;
+}
 
 export default function HabitModal({ isOpen, onClose, onSave, habit = null }) {
   const defaultFormData = {
@@ -14,16 +26,12 @@ export default function HabitModal({ isOpen, onClose, onSave, habit = null }) {
     frequency: 'daily',
     icon: '🎯',
     color: '#d4af37',
-    target: 30,
+    category: 'Other',
+    scheduledTime: getLocalDateTimeString(new Date(Date.now() + 24 * 60 * 60 * 1000)), // Tomorrow
     startTime: '09:00',
     endTime: '10:00',
-    scheduleDays: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
-    category: 'Other',
-    weatherPreferences: {
-      avoidRain: false,
-      avoidHotSun: false,
-      avoidSnow: false,
-    }
+    scheduleDays: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'],
+    target: 30
   }
 
   const [formData, setFormData] = useState(habit ? { ...defaultFormData, ...habit } : defaultFormData)
@@ -45,16 +53,6 @@ export default function HabitModal({ isOpen, onClose, onSave, habit = null }) {
     }))
   }
 
-  const toggleWeatherPref = (pref) => {
-    setFormData(prev => ({
-      ...prev,
-      weatherPreferences: {
-        ...prev.weatherPreferences,
-        [pref]: !prev.weatherPreferences[pref]
-      }
-    }))
-  }
-
   const handleSave = async () => {
     if (!formData.name.trim()) {
       setError('Habit name is required')
@@ -66,26 +64,21 @@ export default function HabitModal({ isOpen, onClose, onSave, habit = null }) {
       return
     }
 
+    if (!formData.scheduledTime) {
+      setError('Please set a reminder time')
+      return
+    }
+
     setSaving(true)
     try {
-      await onSave(formData)
-      setFormData({
-        name: '',
-        description: '',
-        frequency: 'daily',
-        icon: '●',
-        color: '#d4af37',
-        target: 30,
-        startTime: '09:00',
-        endTime: '10:00',
-        scheduleDays: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
-        category: 'Other',
-        weatherPreferences: {
-          avoidRain: false,
-          avoidHotSun: false,
-          avoidSnow: false,
-        }
-      })
+      // Convert local time to ISO string
+      const scheduledDate = new Date(formData.scheduledTime)
+      const dataToSave = {
+        ...formData,
+        scheduledTime: scheduledDate.toISOString()
+      }
+      await onSave(dataToSave)
+      setFormData(defaultFormData)
     } catch (err) {
       setError(err.message || 'Failed to save habit')
     } finally {
@@ -113,7 +106,7 @@ export default function HabitModal({ isOpen, onClose, onSave, habit = null }) {
         {/* Header */}
         <div className="flex justify-between items-center mb-6">
           <h2 className="text-2xl font-bold text-white">
-            {habit ? 'Edit Habit' : 'New Habit'}
+            {habit ? 'Edit Habit' : '🎯 New Habit'}
           </h2>
           <button
             onClick={onClose}
@@ -143,7 +136,7 @@ export default function HabitModal({ isOpen, onClose, onSave, habit = null }) {
               name="name"
               value={formData.name}
               onChange={handleInputChange}
-              placeholder="e.g., Play Soccer"
+              placeholder="e.g., Morning Yoga"
               className="w-full px-4 py-2 rounded-lg bg-white/10 border border-glass-border text-white placeholder-gray-500 focus:outline-none focus:border-command-gold focus:ring-1 focus:ring-command-gold transition-all"
             />
           </div>
@@ -176,34 +169,37 @@ export default function HabitModal({ isOpen, onClose, onSave, habit = null }) {
             </select>
           </div>
 
-          {/* Time Schedule */}
-          <div className="bg-white/5 p-4 rounded-lg border border-white/10">
-            <h3 className="text-sm font-semibold text-gray-300 mb-3">⏰ Time Schedule</h3>
-            <div className="grid grid-cols-2 gap-3 mb-3">
-              <div>
-                <label className="block text-xs text-gray-400 mb-1">Start Time</label>
-                <input
-                  type="time"
-                  name="startTime"
-                  value={formData.startTime}
-                  onChange={handleInputChange}
-                  className="w-full px-3 py-2 rounded-lg bg-white/10 border border-glass-border text-white focus:outline-none focus:border-command-gold transition-all"
-                />
-              </div>
-              <div>
-                <label className="block text-xs text-gray-400 mb-1">End Time</label>
-                <input
-                  type="time"
-                  name="endTime"
-                  value={formData.endTime}
-                  onChange={handleInputChange}
-                  className="w-full px-3 py-2 rounded-lg bg-white/10 border border-glass-border text-white focus:outline-none focus:border-command-gold transition-all"
-                />
-              </div>
-            </div>
+          {/* Reminder Time */}
+          <div>
+            <label className="block text-sm font-medium text-gray-300 mb-2">⏰ Reminder Set For *</label>
+            <input
+              type="datetime-local"
+              name="scheduledTime"
+              value={formData.scheduledTime}
+              onChange={handleInputChange}
+              className="w-full px-4 py-2 rounded-lg bg-white/10 border border-glass-border text-white focus:outline-none focus:border-command-gold focus:ring-1 focus:ring-command-gold transition-all"
+            />
+            <p className="text-xs text-gray-400 mt-1">You'll be notified at this time</p>
+          </div>
 
-            {/* Days Selection */}
-            <label className="block text-xs text-gray-400 mb-2">Days of Week</label>
+          {/* Frequency */}
+          <div>
+            <label className="block text-sm font-medium text-gray-300 mb-2">Frequency</label>
+            <select
+              name="frequency"
+              value={formData.frequency}
+              onChange={handleInputChange}
+              className="w-full px-4 py-2 rounded-lg bg-white/10 border border-glass-border text-white focus:outline-none focus:border-command-gold focus:ring-1 focus:ring-command-gold transition-all"
+            >
+              {FREQUENCY_OPTIONS.map(freq => (
+                <option key={freq} value={freq}>{freq.charAt(0).toUpperCase() + freq.slice(1)}</option>
+              ))}
+            </select>
+          </div>
+
+          {/* Schedule Days */}
+          <div className="bg-white/5 p-4 rounded-lg border border-white/10">
+            <label className="block text-sm font-medium text-gray-300 mb-3">📅 Repeat On</label>
             <div className="grid grid-cols-7 gap-1">
               {DAYS_OF_WEEK.map(day => (
                 <button
@@ -221,42 +217,27 @@ export default function HabitModal({ isOpen, onClose, onSave, habit = null }) {
             </div>
           </div>
 
-          {/* Weather Preferences */}
-          <div className="bg-white/5 p-4 rounded-lg border border-white/10">
-            <h3 className="text-sm font-semibold text-gray-300 mb-3">🌤️ Weather Conditions</h3>
-            <div className="space-y-2">
-              <label className="flex items-center gap-3 cursor-pointer p-2 rounded hover:bg-white/5 transition-all">
-                <input
-                  type="checkbox"
-                  checked={formData.weatherPreferences.avoidRain}
-                  onChange={() => toggleWeatherPref('avoidRain')}
-                  className="w-4 h-4 rounded"
-                />
-                <Droplets size={16} className="text-blue-400" />
-                <span className="text-sm text-gray-300">Avoid on rainy days</span>
-              </label>
-
-              <label className="flex items-center gap-3 cursor-pointer p-2 rounded hover:bg-white/5 transition-all">
-                <input
-                  type="checkbox"
-                  checked={formData.weatherPreferences.avoidHotSun}
-                  onChange={() => toggleWeatherPref('avoidHotSun')}
-                  className="w-4 h-4 rounded"
-                />
-                <Sun size={16} className="text-yellow-400" />
-                <span className="text-sm text-gray-300">Avoid in hot/sunny weather</span>
-              </label>
-
-              <label className="flex items-center gap-3 cursor-pointer p-2 rounded hover:bg-white/5 transition-all">
-                <input
-                  type="checkbox"
-                  checked={formData.weatherPreferences.avoidSnow}
-                  onChange={() => toggleWeatherPref('avoidSnow')}
-                  className="w-4 h-4 rounded"
-                />
-                <Cloud size={16} className="text-gray-300" />
-                <span className="text-sm text-gray-300">Avoid when snowing</span>
-              </label>
+          {/* Time Duration */}
+          <div className="grid grid-cols-2 gap-3">
+            <div>
+              <label className="block text-xs text-gray-400 mb-2">Duration Start</label>
+              <input
+                type="time"
+                name="startTime"
+                value={formData.startTime}
+                onChange={handleInputChange}
+                className="w-full px-3 py-2 rounded-lg bg-white/10 border border-glass-border text-white focus:outline-none focus:border-command-gold transition-all"
+              />
+            </div>
+            <div>
+              <label className="block text-xs text-gray-400 mb-2">Duration End</label>
+              <input
+                type="time"
+                name="endTime"
+                value={formData.endTime}
+                onChange={handleInputChange}
+                className="w-full px-3 py-2 rounded-lg bg-white/10 border border-glass-border text-white focus:outline-none focus:border-command-gold transition-all"
+              />
             </div>
           </div>
 
@@ -299,9 +280,9 @@ export default function HabitModal({ isOpen, onClose, onSave, habit = null }) {
             </div>
           </div>
 
-          {/* Target */}
+          {/* Target Days */}
           <div>
-            <label className="block text-sm font-medium text-gray-300 mb-2">Target Days (for 100%)</label>
+            <label className="block text-sm font-medium text-gray-300 mb-2">Target Days for 100%</label>
             <input
               type="number"
               name="target"

@@ -129,7 +129,16 @@ export default function HabitCardEnhanced({ habit, onComplete, onDelete, onEdit 
             <span className="text-xs">{habit.streak}d</span>
           </div>
         )}
-        {habit.startTime && habit.endTime && (
+        {habit.scheduledTime && (
+          <div className="flex items-center gap-1 px-2 py-0.5 rounded-full bg-command-gold/10 text-xs">
+            <Clock size={11} className="text-command-gold" />
+            <span className="text-xs">
+              {new Date(habit.scheduledTime).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })} at{' '}
+              {new Date(habit.scheduledTime).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true })}
+            </span>
+          </div>
+        )}
+        {habit.startTime && habit.endTime && !habit.scheduledTime && (
           <div className="hidden sm:flex items-center gap-1 px-2 py-0.5 rounded-full bg-white/10 text-xs">
             <Clock size={11} className="text-command-gold" />
             <span className="text-xs">{habit.startTime}</span>
@@ -168,7 +177,7 @@ export default function HabitCardEnhanced({ habit, onComplete, onDelete, onEdit 
         className={`w-full py-2 md:py-3 px-3 md:px-4 rounded-lg md:rounded-xl font-semibold text-sm md:text-base transition-all flex items-center justify-center gap-2 ${
           habit.completed
             ? 'bg-green-500/20 border border-green-500/50 text-green-400 cursor-default'
-            : 'bg-gradient-to-r from-command-gold to-command-cobalt text-command-dark hover:shadow-lg disabled:opacity-50'
+            : 'bg-green-600 text-white hover:bg-green-700 active:bg-green-800 hover:shadow-lg disabled:opacity-50'
         }`}
       >
         {habit.completed ? (
