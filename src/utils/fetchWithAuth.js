@@ -7,6 +7,9 @@ import { API_URL } from '../config/apiConfig'
 export async function fetchWithAuth(endpoint, options = {}) {
   const url = `${API_URL}${endpoint}`
   
+  // Get token from localStorage
+  const token = localStorage.getItem('token')
+  
   const config = {
     ...options,
     credentials: 'include', // Always include cookies
@@ -14,6 +17,11 @@ export async function fetchWithAuth(endpoint, options = {}) {
       'Content-Type': 'application/json',
       ...options.headers
     }
+  }
+  
+  // Add Authorization header if token exists
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`
   }
   
   try {
