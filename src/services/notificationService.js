@@ -208,8 +208,24 @@ class NotificationService {
         }
       }
 
-      // Get VAPID public key from environment
-      const vapidPublicKey = import.meta.env.VITE_VAPID_PUBLIC_KEY;
+      // Get VAPID public key from backend (not environment)
+      let vapidPublicKey = import.meta.env.VITE_VAPID_PUBLIC_KEY;
+      
+      // If not in environment, fetch from backend
+      if (!vapidPublicKey) {
+        console.log('🔑 VAPID key not in environment, fetching from backend...');
+        try {
+          const response = await fetch(`${API_URL}/api/vapid-key`);
+          if (response.ok) {
+            const data = await response.json();
+            vapidPublicKey = data.publicKey;
+            console.log('✅ VAPID key fetched from backend');
+          }
+        } catch (err) {
+          console.warn('⚠️ Could not fetch VAPID key from backend:', err.message);
+        }
+      }
+      
       console.log(`🔑 VAPID key present: ${!!vapidPublicKey}`);
 
       if (!vapidPublicKey) {
