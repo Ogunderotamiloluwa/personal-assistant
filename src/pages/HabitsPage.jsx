@@ -4,7 +4,6 @@ import { Plus, ArrowLeft, Loader } from 'lucide-react'
 import { API_URL } from '../config/apiConfig'
 import HabitCardEnhanced from '../components/HabitCardEnhanced'
 import HabitModal from '../components/HabitModal'
-import StatsOverview from '../components/StatsOverview'
 import { useNotifications } from '../context/NotificationContext'
 
 export default function HabitsManagementPage() {
@@ -165,11 +164,8 @@ export default function HabitsManagementPage() {
         </div>
       </div>
 
-      {/* Stats */}
+      {/* Error Message */}
       <div className="max-w-6xl mx-auto px-4 py-6 md:py-8">
-        <StatsOverview />
-
-        {/* Error Message */}
         {error && (
           <motion.div
             initial={{ opacity: 0, y: -10 }}
