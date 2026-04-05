@@ -80,29 +80,51 @@ export function AuthProvider({ children }) {
       const savedToken = localStorage.getItem('token')
       
       if (savedToken) {
-        // Try to verify token with 5 second timeout (allows for slower backends)
-        const verifyPromise = verifyToken(savedToken)
-        const timeoutPromise = new Promise(resolve => 
-          setTimeout(() => {
-            console.log('Token verification timeout - API may be down');
-            resolve(false)
-          }, 5000)
-        )
+        console.log('🔑 Token found in localStorage, using it immediately');
+        setToken(savedToken)
         
-        const isValid = await Promise.race([verifyPromise, timeoutPromise])
-        
-        if (isValid) {
-          setToken(savedToken)
-          console.log('Token verified successfully')
-        } else {
-          console.log('Clearing invalid or unverifiable token');
-          localStorage.removeItem('token')
-          setToken(null)
-          setUser(null)
+        // Verify token with backend in the background (non-blocking)
+        // Don't clear the token if verification fails or times out
+        try {
+          const controller = new AbortController();
+          const timeoutId = setTimeout(() => controller.abort(), 3000);
+          
+          const response = await fetch(`${API_URL}/api/auth/verify`, {
+            method: 'GET',
+            headers: {
+              'Authorization': `Bearer ${savedToken}`,
+              'Content-Type': 'application/json'
+            },
+            credentials: 'include',
+            signal: controller.signal
+          });
+          
+          clearTimeout(timeoutId);
+          
+          if (response.ok) {
+            const profileResponse = await fetch(`${API_URL}/api/users/profile`, {
+              method: 'GET',
+              headers: {
+                'Authorization': `Bearer ${savedToken}`,
+                'Content-Type': 'application/json'
+              },
+              credentials: 'include'
+            });
+            
+            if (profileResponse.ok) {
+              const data = await profileResponse.json();
+              setUser(data.user);
+              console.log('✅ Token verified and user profile loaded');
+            }
+          }
+        } catch (error) {
+          // Don't clear the token on verification failure or timeout
+          // The token might be valid, the backend might just be slow
+          console.warn('⚠️ Token verification failed/timeout, but keeping token:', error.message);
         }
       }
       
-      // Always finish loading immediately after token check
+      // Always finish loading immediately
       setLoading(false)
     }
 
