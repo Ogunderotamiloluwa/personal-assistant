@@ -78,7 +78,7 @@ export default function NotificationCenter() {
             </div>
             <div className="flex-1 min-w-0">
               <h4 className="text-sm font-bold text-white leading-tight">{notification.title}</h4>
-              <p className="text-xs text-gray-200 mt-1.5 leading-relaxed">{notification.message}</p>
+              <p className="text-xs text-white mt-1.5 leading-relaxed font-medium">{notification.message}</p>
             </div>
             <button
               onClick={() => removeNotification(notification.id)}
