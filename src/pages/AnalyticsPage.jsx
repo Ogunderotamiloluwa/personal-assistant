@@ -90,14 +90,14 @@ export default function AnalyticsPage() {
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
             onClick={() => window.location.hash = '#/dashboard'}
-            className="flex items-center gap-2 px-3 py-2 rounded-lg text-gray-600 hover:bg-gray-100 transition-colors"
+            className="flex items-center gap-2 px-3 py-2 rounded-lg text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
           >
             <ArrowLeft size={18} />
             Back
           </motion.button>
           <div>
-            <h1 className="text-3xl font-semibold text-gray-900">Analytics</h1>
-            <p className="text-sm text-gray-500">Your habit performance insights</p>
+            <h1 className="text-3xl font-semibold text-gray-900 dark:text-white">Analytics</h1>
+            <p className="text-sm text-gray-500 dark:text-gray-400">Your habit performance insights</p>
           </div>
         </div>
       </div>
@@ -108,7 +108,7 @@ export default function AnalyticsPage() {
           <motion.div
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
-            className="mb-6 p-4 rounded-lg bg-red-50 border border-red-200 text-red-700"
+            className="mb-6 p-4 rounded-lg bg-red-50 dark:bg-red-500/10 border border-red-200 dark:border-red-500/20 text-red-700 dark:text-red-400"
           >
             {error}
           </motion.div>
@@ -121,8 +121,8 @@ export default function AnalyticsPage() {
             className="text-center py-20"
           >
             <div className="text-6xl mb-4">✓</div>
-            <h2 className="text-2xl font-semibold text-gray-900 mb-2">No data yet</h2>
-            <p className="text-gray-500">Create habits to see your analytics</p>
+            <h2 className="text-2xl font-semibold text-gray-900 dark:text-white mb-2">No data yet</h2>
+            <p className="text-gray-500 dark:text-gray-400">Create habits to see your analytics</p>
           </motion.div>
         ) : (
           <>
@@ -132,14 +132,14 @@ export default function AnalyticsPage() {
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="p-6 rounded-lg bg-white border border-gray-200 hover:border-blue-300 hover:shadow-md transition-all"
+                className="p-6 rounded-lg bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 hover:border-blue-300 dark:hover:border-blue-500/50 hover:shadow-md dark:hover:shadow-xl transition-all"
               >
                 <div className="flex items-center justify-between mb-4">
-                  <span className="text-gray-600 text-sm">Total Habits</span>
+                  <span className="text-gray-600 dark:text-gray-400 text-sm">Total Habits</span>
                   <Target size={20} className="text-blue-600" />
                 </div>
-                <div className="text-4xl font-bold text-gray-900 mb-2">{totalHabits}</div>
-                <div className="text-xs text-gray-500">{totalHabits} active</div>
+                <div className="text-4xl font-bold text-gray-900 dark:text-white mb-2">{totalHabits}</div>
+                <div className="text-xs text-gray-500 dark:text-gray-400">{totalHabits} active</div>
               </motion.div>
 
               {/* Completed Today */}
@@ -147,14 +147,14 @@ export default function AnalyticsPage() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.1 }}
-                className="p-6 rounded-lg bg-white border border-gray-200 hover:border-green-300 hover:shadow-md transition-all"
+                className="p-6 rounded-lg bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 hover:border-green-300 dark:hover:border-green-500/50 hover:shadow-md dark:hover:shadow-xl transition-all"
               >
                 <div className="flex items-center justify-between mb-4">
-                  <span className="text-gray-600 text-sm">Today</span>
+                  <span className="text-gray-600 dark:text-gray-400 text-sm">Today</span>
                   <Calendar size={20} className="text-green-600" />
                 </div>
-                <div className="text-4xl font-bold text-gray-900 mb-2">{completedToday}/{totalHabits}</div>
-                <div className="text-xs text-gray-500">
+                <div className="text-4xl font-bold text-gray-900 dark:text-white mb-2">{completedToday}/{totalHabits}</div>
+                <div className="text-xs text-gray-500 dark:text-gray-400">
                   {totalHabits > 0 ? Math.round((completedToday / totalHabits) * 100) : 0}% complete
                 </div>
               </motion.div>
@@ -164,14 +164,14 @@ export default function AnalyticsPage() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.2 }}
-                className="p-6 rounded-lg bg-white border border-gray-200 hover:border-indigo-300 hover:shadow-md transition-all"
+                className="p-6 rounded-lg bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 hover:border-indigo-300 dark:hover:border-indigo-500/50 hover:shadow-md dark:hover:shadow-xl transition-all"
               >
                 <div className="flex items-center justify-between mb-4">
-                  <span className="text-gray-600 text-sm">Avg Progress</span>
+                  <span className="text-gray-600 dark:text-gray-400 text-sm">Avg Progress</span>
                   <TrendingUp size={20} className="text-indigo-600" />
                 </div>
-                <div className="text-4xl font-bold text-gray-900 mb-2">{averageProgress}%</div>
-                <div className="text-xs text-gray-500">toward 30-day goal</div>
+                <div className="text-4xl font-bold text-gray-900 dark:text-white mb-2">{averageProgress}%</div>
+                <div className="text-xs text-gray-500 dark:text-gray-400">toward 30-day goal</div>
               </motion.div>
 
               {/* Best Streak */}
@@ -179,14 +179,14 @@ export default function AnalyticsPage() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.3 }}
-                className="p-6 rounded-lg bg-white border border-gray-200 hover:border-orange-300 hover:shadow-md transition-all"
+                className="p-6 rounded-lg bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 hover:border-orange-300 dark:hover:border-orange-500/50 hover:shadow-md dark:hover:shadow-xl transition-all"
               >
                 <div className="flex items-center justify-between mb-4">
-                  <span className="text-gray-600 text-sm">Best Streak</span>
+                  <span className="text-gray-600 dark:text-gray-400 text-sm">Best Streak</span>
                   <Flame size={20} className="text-orange-600" />
                 </div>
-                <div className="text-4xl font-bold text-gray-900 mb-2">{bestStreak}</div>
-                <div className="text-xs text-gray-500">days in a row</div>
+                <div className="text-4xl font-bold text-gray-900 dark:text-white mb-2">{bestStreak}</div>
+                <div className="text-xs text-gray-500 dark:text-gray-400">days in a row</div>
               </motion.div>
             </div>
 
@@ -200,13 +200,13 @@ export default function AnalyticsPage() {
               >
                 <div className="flex items-center gap-2 mb-6">
                   <BarChart3 size={20} className="text-blue-600" />
-                  <h2 className="text-lg font-semibold text-gray-900">Weekly Performance</h2>
+                  <h2 className="text-lg font-semibold text-gray-900 dark:text-white">Weekly Performance</h2>
                 </div>
                 <div className="space-y-3">
                   {weeklyStats.map((stat, idx) => (
                     <div key={idx} className="flex items-center gap-3">
-                      <span className="text-sm text-gray-600 w-12">{stat.day}</span>
-                      <div className="flex-1 h-2 rounded-full bg-gray-200 overflow-hidden">
+                      <span className="text-sm text-gray-600 dark:text-gray-400 w-12">{stat.day}</span>
+                      <div className="flex-1 h-2 rounded-full bg-gray-200 dark:bg-gray-700 overflow-hidden">
                         <motion.div
                           initial={{ width: 0 }}
                           animate={{ width: `${stat.percentage}%` }}

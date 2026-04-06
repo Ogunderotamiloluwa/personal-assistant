@@ -83,8 +83,8 @@ export default function BossCommands({ token, userContext }) {
           <h2 className="text-lg sm:text-xl font-bold text-gray-900 dark:text-white">Boss Commands</h2>
           <p className="text-xs sm:text-sm text-gray-500 dark:text-gray-400">AI-powered assistant</p>
         </div>
-        <div className="p-2.5 rounded-lg bg-blue-100">
-          <Settings size={20} className="text-blue-600" />
+        <div className="p-2.5 rounded-lg bg-blue-100 dark:bg-blue-500/20">
+          <Settings size={20} className="text-blue-600 dark:text-blue-400" />
         </div>
       </div>
 
@@ -100,18 +100,18 @@ export default function BossCommands({ token, userContext }) {
               className={`text-xs sm:text-sm ${
                 msg.isCommand
                   ? msg.isError
-                    ? 'text-red-600'
-                    : 'text-gray-800'
-                  : 'text-gray-700 ml-2 sm:ml-4'
+                    ? 'text-red-600 dark:text-red-400'
+                    : 'text-gray-800 dark:text-gray-200'
+                  : 'text-gray-700 dark:text-gray-300 ml-2 sm:ml-4'
               }`}
             >
               <div className="flex items-start gap-2">
-                <span className="text-base font-semibold flex-shrink-0 w-6 h-6 rounded-full flex items-center justify-center ${msg.isCommand ? 'bg-blue-100 text-blue-600' : 'bg-gray-200 text-gray-600'}">
+                <span className="text-base font-semibold flex-shrink-0 w-6 h-6 rounded-full flex items-center justify-center ${msg.isCommand ? 'bg-blue-100 dark:bg-blue-500/20 text-blue-600 dark:text-blue-400' : 'bg-gray-200 dark:bg-gray-600 text-gray-600 dark:text-gray-300'}">
                   {msg.isCommand ? '▸' : '→'}
                 </span>
                 <div className="min-w-0 flex-1">
                   <p className="leading-relaxed break-words">{msg.text}</p>
-                  <p className="text-xs opacity-60 mt-1.5 text-gray-500">
+                  <p className="text-xs opacity-60 mt-1.5 text-gray-500 dark:text-gray-400">
                     {msg.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                   </p>
                 </div>

@@ -1,19 +1,23 @@
 import React, { useState } from 'react'
 import { motion } from 'framer-motion'
-import { Mail, Lock, User, ArrowRight, AlertCircle, X, Check } from 'lucide-react'
+import { Mail, Lock, User, ArrowRight, AlertCircle, X, Check, CheckCircle } from 'lucide-react'
 import { API_URL } from '../config/apiConfig'
 import { useAuth } from '../context/AuthContext'
 
 export default function SignUpPage({ onSuccess }) {
   const { login } = useAuth()
+  const [step, setStep] = useState(1) // 1: signup form, 2: email verification
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')
+  const [verificationCode, setVerificationCode] = useState('')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const [showPassword, setShowPassword] = useState(false)
   const [passwordStrength, setPasswordStrength] = useState(0)
+  const [verificationToken, setVerificationToken] = useState('')
+  const [resendCooldown, setResendCooldown] = useState(0)
 
   const calculatePasswordStrength = (pwd) => {
     let strength = 0
@@ -71,17 +75,93 @@ export default function SignUpPage({ onSuccess }) {
 
       const data = await response.json()
 
-      // Update auth context with token
-      login(data.token, data.user)
-
-      onSuccess && onSuccess(data)
-      
-      // Redirect to landing page (user can navigate to dashboard if they want)
-      setTimeout(() => {
-        window.location.hash = '#/'
-      }, 300)
+      if (data.requiresEmailVerification) {
+        // Move to email verification step
+        setVerificationToken(data.verificationToken)
+        setStep(2)
+        console.log('✅ Registration successful, waiting for email verification')
+      } else {
+        // Old flow - no email verification
+        login(data.token, data.user)
+        onSuccess && onSuccess(data)
+        setTimeout(() => {
+          window.location.hash = '#/'
+        }, 300)
+      }
     } catch (err) {
       setError('Connection error. Backend may not be running.')
+      console.error(err)
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const handleVerifyEmail = async (e) => {
+    e.preventDefault()
+    setError('')
+    setLoading(true)
+
+    try {
+      const response = await fetch(`${API_URL}/api/auth/verify-email`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({ token: verificationToken, code: verificationCode })
+      })
+
+      if (!response.ok) {
+        const data = await response.json()
+        setError(data.error || 'Verification failed')
+        return
+      }
+
+      const data = await response.json()
+      login(data.token, data.user)
+      onSuccess && onSuccess(data)
+      
+      setTimeout(() => {
+        window.location.hash = '#/dashboard'
+      }, 300)
+    } catch (err) {
+      setError('Verification error. Please try again.')
+      console.error(err)
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const handleResendCode = async () => {
+    if (resendCooldown > 0) return
+    setError('')
+    setLoading(true)
+
+    try {
+      const response = await fetch(`${API_URL}/api/auth/resend-verification-code`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({ token: verificationToken })
+      })
+
+      if (!response.ok) {
+        const data = await response.json()
+        setError(data.error || 'Failed to resend code')
+        return
+      }
+
+      // Start cooldown timer
+      setResendCooldown(60)
+      const timer = setInterval(() => {
+        setResendCooldown((prev) => {
+          if (prev <= 1) {
+            clearInterval(timer)
+            return 0
+          }
+          return prev - 1
+        })
+      }, 1000)
+    } catch (err) {
+      setError('Error resending verification code')
       console.error(err)
     } finally {
       setLoading(false)
@@ -132,8 +212,12 @@ export default function SignUpPage({ onSuccess }) {
             >
               <span className="text-2xl font-bold text-white">PA</span>
             </motion.div>
-            <h1 className="text-2xl md:text-3xl font-bold text-gray-900 mb-2">Create Account</h1>
-            <p className="text-sm text-gray-600">Join your personal assistant today</p>
+            <h1 className="text-2xl md:text-3xl font-bold text-gray-900 mb-2">
+              {step === 1 ? 'Create Account' : 'Verify Email'}
+            </h1>
+            <p className="text-sm text-gray-600">
+              {step === 1 ? 'Join your personal assistant today' : 'Enter the code sent to your email'}
+            </p>
           </div>
 
           {/* Error Message */}
@@ -148,8 +232,9 @@ export default function SignUpPage({ onSuccess }) {
             </motion.div>
           )}
 
-          {/* Form */}
-          <form onSubmit={handleSignUp} className="space-y-4">
+          {/* Step 1: Signup Form */}
+          {step === 1 ? (
+            <form onSubmit={handleSignUp} className="space-y-4">
             {/* Name */}
             <motion.div
               initial={{ opacity: 0, x: -20 }}
@@ -328,29 +413,119 @@ export default function SignUpPage({ onSuccess }) {
               )}
             </motion.button>
           </form>
+          ) : (
+            /* Step 2: Email Verification Form */
+            <form onSubmit={handleVerifyEmail} className="space-y-4">
+              {/* Verification Code Input */}
+              <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.2 }}
+              >
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Verification Code
+                </label>
+                <div className="relative">
+                  <Mail size={20} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+                  <input
+                    type="text"
+                    value={verificationCode}
+                    onChange={(e) => setVerificationCode(e.target.value.toUpperCase())}
+                    placeholder="Enter 6-digit code"
+                    className="w-full pl-10 pr-4 py-3 rounded-lg bg-white border border-gray-300 text-gray-900 placeholder-gray-400 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all text-base tracking-widest text-center"
+                    maxLength="6"
+                    required
+                  />
+                </div>
+              </motion.div>
 
-          {/* Divider */}
-          <div className="my-6 flex items-center gap-3">
-            <div className="h-px flex-1 bg-gray-200" />
-            <span className="text-xs text-gray-500">Already have an account?</span>
-            <div className="h-px flex-1 bg-gray-200" />
-          </div>
+              {/* Verification Info */}
+              <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.3 }}
+                className="p-4 rounded-lg bg-blue-50 border border-blue-200 text-blue-700 text-sm"
+              >
+                <p>We've sent a verification code to:</p>
+                <p className="font-semibold mt-1">{email}</p>
+              </motion.div>
 
-          {/* Login Link */}
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.6 }}
-            className="text-center text-sm text-gray-600"
-          >
-            <button
-              type="button"
-              onClick={() => window.location.hash = '#/login'}
-              className="text-blue-600 hover:text-blue-700 font-semibold transition-colors cursor-pointer"
+              {/* Submit Button */}
+              <motion.button
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.4 }}
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+                type="submit"
+                disabled={loading}
+                className="w-full mt-6 py-3 px-4 rounded-lg bg-blue-600 text-white font-semibold flex items-center justify-center gap-2 hover:bg-blue-700 transition-all disabled:opacity-50 disabled:cursor-not-allowed text-base"
+              >
+                {loading ? 'Verifying...' : (
+                  <>
+                    Verify Email
+                    <CheckCircle size={18} />
+                  </>
+                )}
+              </motion.button>
+
+              {/* Resend Code Button */}
+              <motion.button
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.5 }}
+                type="button"
+                onClick={handleResendCode}
+                disabled={loading || resendCooldown > 0}
+                className="w-full py-2 px-4 rounded-lg bg-gray-100 text-gray-700 font-medium hover:bg-gray-200 transition-all disabled:opacity-50 disabled:cursor-not-allowed text-sm"
+              >
+                {resendCooldown > 0 ? `Resend code in ${resendCooldown}s` : 'Resend verification code'}
+              </motion.button>
+
+              {/* Back Button */}
+              <motion.button
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.6 }}
+                type="button"
+                onClick={() => {
+                  setStep(1);
+                  setVerificationCode('');
+                  setError('');
+                }}
+                className="w-full py-2 px-4 rounded-lg bg-white border border-gray-300 text-gray-700 font-medium hover:bg-gray-50 transition-all text-sm"
+              >
+                Back to sign up
+              </motion.button>
+            </form>
+          )}
+
+          {/* Divider - Only for Step 1 */}
+          {step === 1 && (
+            <div className="my-6 flex items-center gap-3">
+              <div className="h-px flex-1 bg-gray-200" />
+              <span className="text-xs text-gray-500">Already have an account?</span>
+              <div className="h-px flex-1 bg-gray-200" />
+            </div>
+          )}
+
+          {/* Login Link - Only for Step 1 */}
+          {step === 1 && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.6 }}
+              className="text-center text-sm text-gray-600"
             >
-              Sign in instead
-            </button>
-          </motion.div>
+              <button
+                type="button"
+                onClick={() => window.location.hash = '#/login'}
+                className="text-blue-600 hover:text-blue-700 font-semibold transition-colors cursor-pointer"
+              >
+                Sign in instead
+              </button>
+            </motion.div>
+          )}
         </div>
       </motion.div>
     </div>
