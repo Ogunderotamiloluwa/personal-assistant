@@ -34,18 +34,18 @@ export default function RoutineCard({ routine, onDelete, onEdit, onComplete }) {
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -20 }}
       whileHover={{ y: -4 }}
-      className="p-4 md:p-6 rounded-lg md:rounded-xl bg-white border border-gray-200 hover:border-gray-300 hover:shadow-md transition-all group"
+      className="p-4 md:p-6 rounded-lg md:rounded-xl bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600 hover:shadow-md dark:hover:shadow-lg transition-all group"
       style={{ borderTop: `4px solid ${routine.color || '#3b82f6'}` }}
     >
       <div className="flex items-start justify-between gap-2 mb-3 md:mb-4">
         <div className="flex-1 min-w-0">
-          <h3 className="text-sm md:text-lg font-semibold text-gray-900 truncate mb-0.5 md:mb-1">{routine.name}</h3>
+          <h3 className="text-sm md:text-lg font-semibold text-gray-900 dark:text-white truncate mb-0.5 md:mb-1">{routine.name}</h3>
           {routine.description && (
-            <p className="text-xs md:text-sm text-gray-600 line-clamp-1 mb-2">{routine.description}</p>
+            <p className="text-xs md:text-sm text-gray-600 dark:text-gray-400 line-clamp-1 mb-2">{routine.description}</p>
           )}
           
           {/* Time and Days */}
-          <div className="flex items-center gap-2 md:gap-4 mt-2 text-xs text-gray-500 flex-wrap">
+          <div className="flex items-center gap-2 md:gap-4 mt-2 text-xs text-gray-500 dark:text-gray-400 flex-wrap">
             {routine.scheduledTime && (
               <div className="flex items-center gap-1 px-2 py-0.5 rounded-full bg-blue-100 text-blue-700 text-xs font-medium">
                 <Clock size={12} className="md:w-4 md:h-4" />
@@ -73,7 +73,7 @@ export default function RoutineCard({ routine, onDelete, onEdit, onComplete }) {
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
             onClick={() => onEdit && onEdit(routine)}
-            className="p-1.5 md:p-2 rounded hover:bg-blue-100 text-blue-600 transition-colors"
+            className="p-1.5 md:p-2 rounded hover:bg-blue-100 dark:hover:bg-blue-500/20 text-blue-600 dark:text-blue-400 transition-colors"
           >
             <Edit2 size={14} className="md:w-4 md:h-4" />
           </motion.button>
@@ -81,7 +81,7 @@ export default function RoutineCard({ routine, onDelete, onEdit, onComplete }) {
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
             onClick={handleDelete}
-            className="p-1.5 md:p-2 rounded hover:bg-red-100 text-red-600 transition-colors"
+            className="p-1.5 md:p-2 rounded hover:bg-red-100 dark:hover:bg-red-500/20 text-red-600 dark:text-red-400 transition-colors"
           >
             <Trash2 size={14} className="md:w-4 md:h-4" />
           </motion.button>

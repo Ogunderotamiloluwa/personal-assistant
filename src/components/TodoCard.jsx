@@ -139,7 +139,7 @@ export default function TodoCard({ todo, onComplete, onDelete, onEdit, userLocat
             console.log('🗑️ Delete button clicked for todo:', todo.id)
             onDelete && onDelete(todo.id)
           }}
-          className="py-2 px-3 rounded-lg bg-white border border-gray-300 text-gray-600 hover:bg-red-50 hover:border-red-300 hover:text-red-700 transition-colors font-medium"
+          className="py-2 px-3 rounded-lg bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 text-gray-600 dark:text-gray-400 hover:bg-red-50 dark:hover:bg-red-500/10 hover:border-red-300 dark:hover:border-red-400 hover:text-red-700 dark:hover:text-red-400 transition-colors font-medium"
           title="Delete this todo"
         >
           <Trash2 size={16} />

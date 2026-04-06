@@ -89,10 +89,10 @@ export default function StatsOverview() {
     }
 
     return (
-      <div className={`p-5 md:p-6 rounded-2xl bg-white border-2 ${styles.bg} shadow-md hover:shadow-xl transition-all group`}>
+      <div className={`p-5 md:p-6 rounded-2xl bg-white dark:bg-gray-800 border-2 ${styles.bg} shadow-md dark:shadow-xl hover:shadow-xl dark:hover:shadow-xl transition-all group`}>
         <div className="flex items-start justify-between gap-4">
           <div className="flex-1">
-            <div className="text-xs md:text-sm text-gray-500 mb-2 md:mb-3 font-medium uppercase tracking-wide">{label}</div>
+            <div className="text-xs md:text-sm text-gray-500 dark:text-gray-400 mb-2 md:mb-3 font-medium uppercase tracking-wide">{label}</div>
             <div className={`text-3xl md:text-4xl font-bold ${textGradients[accentColor]} bg-clip-text text-transparent`}>
               {value}{unit}
             </div>

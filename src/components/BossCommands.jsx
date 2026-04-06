@@ -75,13 +75,13 @@ export default function BossCommands({ token, userContext }) {
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      className="rounded-2xl bg-white border border-gray-200 shadow-md p-4 sm:p-6 hover:shadow-lg transition-shadow"
+      className="rounded-2xl bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-md dark:shadow-xl p-4 sm:p-6 hover:shadow-lg transition-shadow"
     >
       {/* Header */}
       <div className="flex items-center justify-between mb-4 sm:mb-5">
         <div>
-          <h2 className="text-lg sm:text-xl font-bold text-gray-900">Boss Commands</h2>
-          <p className="text-xs sm:text-sm text-gray-500">AI-powered assistant</p>
+          <h2 className="text-lg sm:text-xl font-bold text-gray-900 dark:text-white">Boss Commands</h2>
+          <p className="text-xs sm:text-sm text-gray-500 dark:text-gray-400">AI-powered assistant</p>
         </div>
         <div className="p-2.5 rounded-lg bg-blue-100">
           <Settings size={20} className="text-blue-600" />
@@ -89,7 +89,7 @@ export default function BossCommands({ token, userContext }) {
       </div>
 
       {/* Messages Display */}
-      <div className="bg-gradient-to-br from-gray-50 to-blue-50 rounded-xl p-4 sm:p-5 mb-4 sm:mb-5 min-h-[150px] sm:min-h-[200px] max-h-[300px] overflow-y-auto space-y-3 sm:space-y-4 border border-gray-200">
+      <div className="bg-gradient-to-br from-gray-50 to-blue-50 dark:from-gray-900 dark:to-gray-800 rounded-xl p-4 sm:p-5 mb-4 sm:mb-5 min-h-[150px] sm:min-h-[200px] max-h-[300px] overflow-y-auto space-y-3 sm:space-y-4 border border-gray-200 dark:border-gray-700">
         <AnimatePresence>
           {messages.map((msg) => (
             <motion.div
@@ -143,7 +143,7 @@ export default function BossCommands({ token, userContext }) {
           onChange={(e) => setInput(e.target.value)}
           placeholder="Enter your command..."
           disabled={loading}
-          className="flex-1 min-w-0 px-3 sm:px-4 py-2.5 text-xs sm:text-sm rounded-lg bg-white border-2 border-gray-200 text-gray-900 placeholder-gray-400 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all disabled:opacity-50"
+          className="flex-1 min-w-0 px-3 sm:px-4 py-2.5 text-xs sm:text-sm rounded-lg bg-white dark:bg-gray-700 border-2 border-gray-200 dark:border-gray-600 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200 dark:focus:ring-blue-500/50 transition-all disabled:opacity-50"
         />
         <motion.button
           whileHover={{ scale: 1.05 }}
