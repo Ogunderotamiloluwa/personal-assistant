@@ -64,6 +64,8 @@ export default function ForgotPasswordPage() {
         return
       }
 
+      // Store the verified token for the password reset step
+      setResetToken(data.token)
       setStep(3) // Move to password reset step
       console.log('✅ Code verified, ready to reset password')
     } catch (err) {
@@ -95,8 +97,7 @@ export default function ForgotPasswordPage() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          email,
-          code,
+          token: resetToken,
           newPassword
         })
       })
