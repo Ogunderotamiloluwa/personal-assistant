@@ -172,18 +172,18 @@ export default function SignUpPage({ onSuccess }) {
   const strengthColors = ['bg-red-500', 'bg-orange-500', 'bg-yellow-500', 'bg-lime-500', 'bg-green-500', 'bg-emerald-500']
 
   return (
-    <div className="min-h-screen w-full bg-gradient-to-br from-blue-50 via-white to-indigo-50 flex items-center justify-center p-4">
+    <div className="min-h-screen w-full bg-gradient-to-br from-blue-50 via-white to-indigo-50 dark:from-gray-900 dark:via-gray-900 dark:to-gray-800 flex items-center justify-center p-4">
       {/* Gradient Overlay Effects */}
       <div className="fixed inset-0 overflow-hidden pointer-events-none">
         <motion.div
           animate={{ x: [0, 30, 0], y: [0, 20, 0] }}
           transition={{ duration: 10, repeat: Infinity }}
-          className="absolute top-20 right-20 w-96 h-96 bg-blue-200/30 rounded-full blur-3xl"
+          className="absolute top-20 right-20 w-96 h-96 bg-blue-200/30 dark:bg-blue-500/10 rounded-full blur-3xl"
         />
         <motion.div
           animate={{ x: [0, -30, 0], y: [0, -20, 0] }}
           transition={{ duration: 12, repeat: Infinity }}
-          className="absolute bottom-20 left-20 w-80 h-80 bg-indigo-200/30 rounded-full blur-3xl"
+          className="absolute bottom-20 left-20 w-80 h-80 bg-indigo-200/30 dark:bg-indigo-500/10 rounded-full blur-3xl"
         />
       </div>
 
@@ -196,13 +196,13 @@ export default function SignUpPage({ onSuccess }) {
           initial={{ opacity: 0, x: -20 }}
           animate={{ opacity: 1, x: 0 }}
           onClick={() => window.location.hash = '#/'}
-          className="mb-4 flex items-center gap-2 text-sm text-gray-600 hover:text-blue-600 transition-colors"
+          className="mb-4 flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
         >
           <X size={16} />
           Back to Home
         </motion.button>
 
-        <div className="p-6 md:p-8 rounded-2xl bg-white border border-gray-200 shadow-2xl backdrop-blur-sm">
+        <div className="p-6 md:p-8 rounded-2xl bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-2xl backdrop-blur-sm">
           {/* Header */}
           <div className="text-center mb-8">
             <motion.div
@@ -212,10 +212,10 @@ export default function SignUpPage({ onSuccess }) {
             >
               <span className="text-2xl font-bold text-white">PA</span>
             </motion.div>
-            <h1 className="text-2xl md:text-3xl font-bold text-gray-900 mb-2">
+            <h1 className="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white mb-2">
               {step === 1 ? 'Create Account' : 'Verify Email'}
             </h1>
-            <p className="text-sm text-gray-600">
+            <p className="text-sm text-gray-600 dark:text-gray-400">
               {step === 1 ? 'Join your personal assistant today' : 'Enter the code sent to your email'}
             </p>
           </div>
@@ -225,7 +225,7 @@ export default function SignUpPage({ onSuccess }) {
             <motion.div
               initial={{ opacity: 0, y: -10 }}
               animate={{ opacity: 1, y: 0 }}
-              className="mb-6 p-3 rounded-lg bg-red-50 border border-red-200 text-red-700 text-sm flex gap-2"
+              className="mb-6 p-3 rounded-lg bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 text-red-700 dark:text-red-400 text-sm flex gap-2"
             >
               <AlertCircle size={16} className="flex-shrink-0 mt-0.5" />
               <span>{error}</span>
@@ -241,7 +241,7 @@ export default function SignUpPage({ onSuccess }) {
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: 0.1 }}
             >
-              <label className="block text-sm font-medium text-gray-700 mb-2">Full Name</label>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Full Name</label>
               <div className="relative">
                 <User size={18} className="absolute left-3 top-3.5 text-blue-600" />
                 <input
@@ -249,7 +249,7 @@ export default function SignUpPage({ onSuccess }) {
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                   placeholder="Your Name"
-                  className="w-full pl-10 pr-4 py-3 rounded-lg bg-white border border-gray-300 text-gray-900 placeholder-gray-400 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all text-base"
+                  className="w-full pl-10 pr-4 py-3 rounded-lg bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:border-blue-500 dark:focus:border-blue-400 focus:ring-2 focus:ring-blue-200 dark:focus:ring-blue-500/30 transition-all text-base"
                   required
                 />
               </div>
@@ -261,7 +261,7 @@ export default function SignUpPage({ onSuccess }) {
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: 0.2 }}
             >
-              <label className="block text-sm font-medium text-gray-700 mb-2">Email</label>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Email</label>
               <div className="relative">
                 <Mail size={18} className="absolute left-3 top-3.5 text-blue-600" />
                 <input
@@ -269,7 +269,7 @@ export default function SignUpPage({ onSuccess }) {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="boss@example.com"
-                  className="w-full pl-10 pr-4 py-3 rounded-lg bg-white border border-gray-300 text-gray-900 placeholder-gray-400 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all text-base"
+                  className="w-full pl-10 pr-4 py-3 rounded-lg bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:border-blue-500 dark:focus:border-blue-400 focus:ring-2 focus:ring-blue-200 dark:focus:ring-blue-500/30 transition-all text-base"
                   required
                 />
               </div>
@@ -281,7 +281,7 @@ export default function SignUpPage({ onSuccess }) {
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: 0.3 }}
             >
-              <label className="block text-sm font-medium text-gray-700 mb-2">Password</label>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Password</label>
               <div className="relative">
                 <Lock size={18} className="absolute left-3 top-3.5 text-blue-600" />
                 <input
@@ -289,13 +289,13 @@ export default function SignUpPage({ onSuccess }) {
                   value={password}
                   onChange={handlePasswordChange}
                   placeholder="••••••••"
-                  className="w-full pl-10 pr-10 py-3 rounded-lg bg-white border border-gray-300 text-gray-900 placeholder-gray-400 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all text-base"
+                  className="w-full pl-10 pr-10 py-3 rounded-lg bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:border-blue-500 dark:focus:border-blue-400 focus:ring-2 focus:ring-blue-200 dark:focus:ring-blue-500/30 transition-all text-base"
                   required
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-3.5 text-gray-500 hover:text-gray-700 transition-colors text-sm font-medium"
+                  className="absolute right-3 top-3.5 text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 transition-colors text-sm font-medium"
                 >
                   {showPassword ? 'Hide' : 'Show'}
                 </button>
@@ -307,25 +307,25 @@ export default function SignUpPage({ onSuccess }) {
                       <div
                         key={i}
                         className={`h-1 flex-1 rounded-full ${
-                          i < passwordStrength ? strengthColors[passwordStrength - 1] : 'bg-gray-300'
+                          i < passwordStrength ? strengthColors[passwordStrength - 1] : 'bg-gray-300 dark:bg-gray-600'
                         }`}
                       />
                     ))}
                   </div>
-                  <p className="text-xs text-gray-600">
-                    Strength: <span className="text-gray-900 font-medium">{strengthTexts[passwordStrength]}</span>
+                  <p className="text-xs text-gray-600 dark:text-gray-400">
+                    Strength: <span className="text-gray-900 dark:text-white font-medium">{strengthTexts[passwordStrength]}</span>
                   </p>
                   
                   {/* Password Requirements */}
-                  <div className="bg-gray-50 p-2 rounded-lg border border-gray-200 space-y-1">
-                    <p className="text-xs font-medium text-gray-700 mb-1">Password requirements:</p>
+                  <div className="bg-gray-50 dark:bg-gray-700 p-2 rounded-lg border border-gray-200 dark:border-gray-600 space-y-1">
+                    <p className="text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">Password requirements:</p>
                     <div className="flex items-center gap-2">
                       {password.length >= 6 ? (
                         <Check size={14} className="text-green-600" />
                       ) : (
-                        <span className="w-3.5 h-3.5 rounded-full border border-gray-400" />
+                        <span className="w-3.5 h-3.5 rounded-full border border-gray-400 dark:border-gray-500" />
                       )}
-                      <span className={`text-xs ${password.length >= 6 ? 'text-green-700' : 'text-gray-600'}`}>
+                      <span className={`text-xs ${password.length >= 6 ? 'text-green-700 dark:text-green-400' : 'text-gray-600 dark:text-gray-400'}`}>
                         At least 6 characters
                       </span>
                     </div>
@@ -333,9 +333,9 @@ export default function SignUpPage({ onSuccess }) {
                       {password.length >= 8 ? (
                         <Check size={14} className="text-green-600" />
                       ) : (
-                        <span className="w-3.5 h-3.5 rounded-full border border-gray-400" />
+                        <span className="w-3.5 h-3.5 rounded-full border border-gray-400 dark:border-gray-500" />
                       )}
-                      <span className={`text-xs ${password.length >= 8 ? 'text-green-700' : 'text-gray-600'}`}>
+                      <span className={`text-xs ${password.length >= 8 ? 'text-green-700 dark:text-green-400' : 'text-gray-600 dark:text-gray-400'}`}>
                         At least 8 characters (recommended)
                       </span>
                     </div>
@@ -343,9 +343,9 @@ export default function SignUpPage({ onSuccess }) {
                       {/[A-Z]/.test(password) ? (
                         <Check size={14} className="text-green-600" />
                       ) : (
-                        <span className="w-3.5 h-3.5 rounded-full border border-gray-400" />
+                        <span className="w-3.5 h-3.5 rounded-full border border-gray-400 dark:border-gray-500" />
                       )}
-                      <span className={`text-xs ${/[A-Z]/.test(password) ? 'text-green-700' : 'text-gray-600'}`}>
+                      <span className={`text-xs ${/[A-Z]/.test(password) ? 'text-green-700 dark:text-green-400' : 'text-gray-600 dark:text-gray-400'}`}>
                         One uppercase letter
                       </span>
                     </div>
@@ -353,9 +353,9 @@ export default function SignUpPage({ onSuccess }) {
                       {/[0-9]/.test(password) ? (
                         <Check size={14} className="text-green-600" />
                       ) : (
-                        <span className="w-3.5 h-3.5 rounded-full border border-gray-400" />
+                        <span className="w-3.5 h-3.5 rounded-full border border-gray-400 dark:border-gray-500" />
                       )}
-                      <span className={`text-xs ${/[0-9]/.test(password) ? 'text-green-700' : 'text-gray-600'}`}>
+                      <span className={`text-xs ${/[0-9]/.test(password) ? 'text-green-700 dark:text-green-400' : 'text-gray-600 dark:text-gray-400'}`}>
                         One number
                       </span>
                     </div>
@@ -363,9 +363,9 @@ export default function SignUpPage({ onSuccess }) {
                       {/[^A-Za-z0-9]/.test(password) ? (
                         <Check size={14} className="text-green-600" />
                       ) : (
-                        <span className="w-3.5 h-3.5 rounded-full border border-gray-400" />
+                        <span className="w-3.5 h-3.5 rounded-full border border-gray-400 dark:border-gray-500" />
                       )}
-                      <span className={`text-xs ${/[^A-Za-z0-9]/.test(password) ? 'text-green-700' : 'text-gray-600'}`}>
+                      <span className={`text-xs ${/[^A-Za-z0-9]/.test(password) ? 'text-green-700 dark:text-green-400' : 'text-gray-600 dark:text-gray-400'}`}>
                         One special character (!@#$%^&*)
                       </span>
                     </div>
@@ -380,7 +380,7 @@ export default function SignUpPage({ onSuccess }) {
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: 0.4 }}
             >
-              <label className="block text-sm font-medium text-gray-700 mb-2">Confirm Password</label>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Confirm Password</label>
               <div className="relative">
                 <Lock size={18} className="absolute left-3 top-3.5 text-blue-600" />
                 <input
@@ -388,7 +388,7 @@ export default function SignUpPage({ onSuccess }) {
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
                   placeholder="••••••••"
-                  className="w-full pl-10 pr-4 py-3 rounded-lg bg-white border border-gray-300 text-gray-900 placeholder-gray-400 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all text-base"
+                  className="w-full pl-10 pr-4 py-3 rounded-lg bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:border-blue-500 dark:focus:border-blue-400 focus:ring-2 focus:ring-blue-200 dark:focus:ring-blue-500/30 transition-all text-base"
                   required
                 />
               </div>
@@ -422,17 +422,17 @@ export default function SignUpPage({ onSuccess }) {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.2 }}
               >
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                   Verification Code
                 </label>
                 <div className="relative">
-                  <Mail size={20} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+                  <Mail size={20} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 dark:text-gray-500" />
                   <input
                     type="text"
                     value={verificationCode}
                     onChange={(e) => setVerificationCode(e.target.value.toUpperCase())}
                     placeholder="Enter 6-digit code"
-                    className="w-full pl-10 pr-4 py-3 rounded-lg bg-white border border-gray-300 text-gray-900 placeholder-gray-400 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all text-base tracking-widest text-center"
+                    className="w-full pl-10 pr-4 py-3 rounded-lg bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:border-blue-500 dark:focus:border-blue-400 focus:ring-2 focus:ring-blue-200 dark:focus:ring-blue-500/30 transition-all text-base tracking-widest text-center"
                     maxLength="6"
                     required
                   />
@@ -444,7 +444,7 @@ export default function SignUpPage({ onSuccess }) {
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.3 }}
-                className="p-4 rounded-lg bg-blue-50 border border-blue-200 text-blue-700 text-sm"
+                className="p-4 rounded-lg bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 text-blue-700 dark:text-blue-400 text-sm"
               >
                 <p>We've sent a verification code to:</p>
                 <p className="font-semibold mt-1">{email}</p>
@@ -477,7 +477,7 @@ export default function SignUpPage({ onSuccess }) {
                 type="button"
                 onClick={handleResendCode}
                 disabled={loading || resendCooldown > 0}
-                className="w-full py-2 px-4 rounded-lg bg-gray-100 text-gray-700 font-medium hover:bg-gray-200 transition-all disabled:opacity-50 disabled:cursor-not-allowed text-sm"
+                className="w-full py-2 px-4 rounded-lg bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 font-medium hover:bg-gray-200 dark:hover:bg-gray-600 transition-all disabled:opacity-50 disabled:cursor-not-allowed text-sm"
               >
                 {resendCooldown > 0 ? `Resend code in ${resendCooldown}s` : 'Resend verification code'}
               </motion.button>
@@ -493,7 +493,7 @@ export default function SignUpPage({ onSuccess }) {
                   setVerificationCode('');
                   setError('');
                 }}
-                className="w-full py-2 px-4 rounded-lg bg-white border border-gray-300 text-gray-700 font-medium hover:bg-gray-50 transition-all text-sm"
+                className="w-full py-2 px-4 rounded-lg bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 font-medium hover:bg-gray-50 dark:hover:bg-gray-600 transition-all text-sm"
               >
                 Back to sign up
               </motion.button>

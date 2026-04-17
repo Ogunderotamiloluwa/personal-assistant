@@ -58,8 +58,8 @@ export default function LandingPage() {
               PA
             </div>
             <div>
-              <div className="font-bold text-base md:text-lg text-gray-900">Boss</div>
-              <div className="text-xs text-gray-500 hidden sm:block">Personal Assistant</div>
+              <div className="font-bold text-base md:text-lg text-gray-900 dark:text-white">Boss</div>
+              <div className="text-xs text-gray-500 dark:text-gray-400 hidden sm:block">Personal Assistant</div>
             </div>
           </motion.div>
 
@@ -70,7 +70,7 @@ export default function LandingPage() {
           >
             <button
               onClick={handleSignIn}
-              className="px-3 md:px-6 py-2 rounded-lg border border-gray-300 text-xs md:text-sm text-gray-700 hover:text-blue-600 hover:border-blue-600 transition-colors cursor-pointer font-medium active:scale-95"
+              className="px-3 md:px-6 py-2 rounded-lg border border-gray-300 dark:border-gray-600 text-xs md:text-sm text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 hover:border-blue-600 dark:hover:border-blue-400 transition-colors cursor-pointer font-medium active:scale-95"
             >
               Sign In
             </button>
@@ -93,15 +93,15 @@ export default function LandingPage() {
               animate={{ opacity: 1, scale: 1 }}
               className="mb-6 inline-block"
             >
-              <div className="px-4 py-2 rounded-full bg-blue-100 border border-blue-200 backdrop-blur-sm">
-                <span className="text-blue-700 text-xs md:text-sm font-semibold">✨ Transform Your Productivity</span>
+              <div className="px-4 py-2 rounded-full bg-blue-100 dark:bg-blue-900/30 border border-blue-200 dark:border-blue-800 backdrop-blur-sm">
+                <span className="text-blue-700 dark:text-blue-300 text-xs md:text-sm font-semibold">✨ Transform Your Productivity</span>
               </div>
             </motion.div>
 
             <motion.h1
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold mb-4 md:mb-6 text-gray-900 leading-tight"
+              className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold mb-4 md:mb-6 text-gray-900 dark:text-white leading-tight"
             >
               Your AI Personal
               <span className="bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent"> Assistant</span>
@@ -111,7 +111,7 @@ export default function LandingPage() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.1 }}
-              className="text-base sm:text-lg md:text-xl text-gray-600 mb-6 md:mb-8 leading-relaxed max-w-2xl mx-auto"
+              className="text-base sm:text-lg md:text-xl text-gray-600 dark:text-gray-400 mb-6 md:mb-8 leading-relaxed max-w-2xl mx-auto"
             >
               Execute your goals with precision. Get real-time AI recommendations, track your habits, and stay productive every day with your personal assistant.
             </motion.p>
@@ -141,20 +141,20 @@ export default function LandingPage() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 0.3 }}
-              className="flex justify-center items-center gap-6 text-center text-gray-600 text-sm"
+              className="flex justify-center items-center gap-6 text-center text-gray-600 dark:text-gray-400 text-sm"
             >
               <div>
-                <div className="font-bold text-lg text-gray-900">1000+</div>
+                <div className="font-bold text-lg text-gray-900 dark:text-white">1000+</div>
                 <div className="text-xs">Active Users</div>
               </div>
-              <div className="w-px h-8 bg-gray-300"></div>
+              <div className="w-px h-8 bg-gray-300 dark:bg-gray-600"></div>
               <div>
-                <div className="font-bold text-lg text-gray-900">50k+</div>
+                <div className="font-bold text-lg text-gray-900 dark:text-white">50k+</div>
                 <div className="text-xs">Goals Tracked</div>
               </div>
-              <div className="w-px h-8 bg-gray-300"></div>
+              <div className="w-px h-8 bg-gray-300 dark:bg-gray-600"></div>
               <div>
-                <div className="font-bold text-lg text-gray-900">98%</div>
+                <div className="font-bold text-lg text-gray-900 dark:text-white">98%</div>
                 <div className="text-xs">Success Rate</div>
               </div>
             </motion.div>
@@ -167,7 +167,7 @@ export default function LandingPage() {
             <motion.h2
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              className="text-3xl md:text-4xl font-bold text-center mb-4 text-gray-900"
+              className="text-3xl md:text-4xl font-bold text-center mb-4 text-gray-900 dark:text-white"
             >
               Powerful Features
             </motion.h2>
@@ -175,7 +175,7 @@ export default function LandingPage() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.1 }}
-              className="text-center text-gray-600 mb-12 max-w-2xl mx-auto"
+              className="text-center text-gray-600 dark:text-gray-400 mb-12 max-w-2xl mx-auto"
             >
               Everything you need to take control of your goals and build lasting habits.
             </motion.p>
@@ -193,13 +193,13 @@ export default function LandingPage() {
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.3 + idx * 0.1 }}
                   whileHover={{ y: -8, boxShadow: "0 20px 40px rgba(59, 130, 246, 0.15)" }}
-                  className="p-6 md:p-8 rounded-2xl bg-white border border-gray-200 hover:border-blue-300 transition-all group cursor-pointer shadow-md"
+                  className="p-6 md:p-8 rounded-2xl bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 hover:border-blue-300 dark:hover:border-blue-500 transition-all group cursor-pointer shadow-md dark:shadow-lg"
                 >
-                  <div className="p-3 rounded-xl bg-gradient-to-br from-blue-100 to-indigo-100 w-fit mb-4 group-hover:shadow-lg transition-shadow">
-                    <feature.icon size={28} className="text-blue-600" />
+                  <div className="p-3 rounded-xl bg-gradient-to-br from-blue-100 dark:from-blue-900/30 to-indigo-100 dark:to-indigo-900/30 w-fit mb-4 group-hover:shadow-lg transition-shadow">
+                    <feature.icon size={28} className="text-blue-600 dark:text-blue-400" />
                   </div>
-                  <h3 className="text-lg md:text-xl font-bold text-gray-900 mb-2">{feature.title}</h3>
-                  <p className="text-sm md:text-base text-gray-600 leading-relaxed">{feature.description}</p>
+                  <h3 className="text-lg md:text-xl font-bold text-gray-900 dark:text-white mb-2">{feature.title}</h3>
+                  <p className="text-sm md:text-base text-gray-600 dark:text-gray-400 leading-relaxed">{feature.description}</p>
                 </motion.div>
               ))}
             </motion.div>
@@ -239,7 +239,7 @@ export default function LandingPage() {
       </main>
 
       {/* Footer */}
-      <footer className="relative z-20 border-t border-gray-200 py-6 md:py-8 px-4 md:px-6 text-center text-gray-600 text-xs md:text-sm bg-white/50 backdrop-blur-sm">
+      <footer className="relative z-20 border-t border-gray-200 dark:border-gray-700 py-6 md:py-8 px-4 md:px-6 text-center text-gray-600 dark:text-gray-400 text-xs md:text-sm bg-white dark:bg-gray-800 backdrop-blur-sm">
         <p>© 2026 Personal Assistant. All rights reserved.</p>
       </footer>
     </div>

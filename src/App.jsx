@@ -235,12 +235,12 @@ function DashboardContent() {
 
                 {/* AI Suggestions */}
                 {suggestions.length > 0 && (
-                  <section className="p-6 rounded-lg bg-white border border-gray-200">
-                    <h2 className="text-lg font-semibold text-gray-900 mb-4">AI Recommendations</h2>
+                  <section className="p-6 rounded-lg bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
+                    <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">AI Recommendations</h2>
                     <div className="space-y-3">
                       {suggestions.map((suggestion, idx) => (
-                        <div key={idx} className="p-4 rounded-lg border border-blue-200 bg-blue-50 hover:bg-blue-100 transition-all cursor-pointer group">
-                          <p className="text-sm text-gray-700 group-hover:text-blue-600 transition-colors">{suggestion}</p>
+                        <div key={idx} className="p-4 rounded-lg border border-blue-200 dark:border-blue-800 bg-blue-50 dark:bg-blue-900/10 hover:bg-blue-100 dark:hover:bg-blue-900/20 transition-all cursor-pointer group">
+                          <p className="text-sm text-gray-700 dark:text-gray-300 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">{suggestion}</p>
                         </div>
                       ))}
                     </div>
@@ -251,10 +251,10 @@ function DashboardContent() {
               {/* Right Column - Stats & Weather */}
               <div className="space-y-6 lg:max-h-[calc(100vh-150px)] lg:overflow-y-auto pr-0 lg:pr-2">
                 {/* Active Habits Widget */}
-                <div className="p-6 rounded-lg bg-white border border-gray-200">
+                <div className="p-6 rounded-lg bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
                   <div className="flex items-center justify-between mb-4">
-                    <h2 className="text-lg font-semibold text-gray-900">Active Habits</h2>
-                    <button onClick={createNewHabit} className="p-2 rounded-lg bg-blue-100 text-blue-600 hover:bg-blue-200 transition-all">
+                    <h2 className="text-lg font-semibold text-gray-900 dark:text-white">Active Habits</h2>
+                    <button onClick={createNewHabit} className="p-2 rounded-lg bg-blue-100 dark:bg-blue-500/20 text-blue-600 dark:text-blue-400 hover:bg-blue-200 dark:hover:bg-blue-500/30 transition-all">
                       <Plus size={18} />
                     </button>
                   </div>
@@ -283,11 +283,11 @@ function DashboardContent() {
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.3 }}
                     whileHover={{ scale: 1.02 }}
-                    className="block p-5 rounded-lg bg-white border border-blue-200 hover:border-blue-400 hover:shadow-md transition-all cursor-pointer"
+                    className="block p-5 rounded-lg bg-white dark:bg-gray-800 border border-blue-200 dark:border-blue-800 hover:border-blue-400 dark:hover:border-blue-600 hover:shadow-md transition-all cursor-pointer"
                   >
-                    <div className="w-8 h-8 rounded-lg bg-blue-100 flex items-center justify-center mb-2 text-blue-700 font-bold text-sm">T</div>
-                    <h3 className="text-base font-semibold text-gray-900">Todos</h3>
-                    <p className="text-xs text-gray-600">Manage tasks & priorities</p>
+                    <div className="w-8 h-8 rounded-lg bg-blue-100 dark:bg-blue-500/20 flex items-center justify-center mb-2 text-blue-700 dark:text-blue-400 font-bold text-sm">T</div>
+                    <h3 className="text-base font-semibold text-gray-900 dark:text-white">Todos</h3>
+                    <p className="text-xs text-gray-600 dark:text-gray-400">Manage tasks & priorities</p>
                   </motion.a>
 
                   {/* Weather Link */}
@@ -297,11 +297,11 @@ function DashboardContent() {
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.35 }}
                     whileHover={{ scale: 1.02 }}
-                    className="block p-5 rounded-lg bg-white border border-amber-200 hover:border-amber-400 hover:shadow-md transition-all cursor-pointer"
+                    className="block p-5 rounded-lg bg-white dark:bg-gray-800 border border-amber-200 dark:border-amber-800 hover:border-amber-400 dark:hover:border-amber-600 hover:shadow-md transition-all cursor-pointer"
                   >
-                    <div className="w-8 h-8 rounded-lg bg-amber-100 flex items-center justify-center mb-2 text-amber-700 font-bold text-sm">W</div>
-                    <h3 className="text-base font-semibold text-gray-900">Weather</h3>
-                    <p className="text-xs text-gray-600">Real-time conditions & forecast</p>
+                    <div className="w-8 h-8 rounded-lg bg-amber-100 dark:bg-amber-500/20 flex items-center justify-center mb-2 text-amber-700 dark:text-amber-400 font-bold text-sm">W</div>
+                    <h3 className="text-base font-semibold text-gray-900 dark:text-white">Weather</h3>
+                    <p className="text-xs text-gray-600 dark:text-gray-400">Real-time conditions & forecast</p>
                   </motion.a>
 
                   {/* Chat Link */}
@@ -311,11 +311,11 @@ function DashboardContent() {
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.4 }}
                     whileHover={{ scale: 1.02 }}
-                    className="block p-5 rounded-lg bg-white border border-purple-200 hover:border-purple-400 hover:shadow-md transition-all cursor-pointer"
+                    className="block p-5 rounded-lg bg-white dark:bg-gray-800 border border-purple-200 dark:border-purple-800 hover:border-purple-400 dark:hover:border-purple-600 hover:shadow-md transition-all cursor-pointer"
                   >
-                    <div className="w-8 h-8 rounded-lg bg-purple-100 flex items-center justify-center mb-2 text-purple-700 font-bold text-sm">C</div>
-                    <h3 className="text-base font-semibold text-gray-900">Chat</h3>
-                    <p className="text-xs text-gray-600">Talk with your AI assistant</p>
+                    <div className="w-8 h-8 rounded-lg bg-purple-100 dark:bg-purple-500/20 flex items-center justify-center mb-2 text-purple-700 dark:text-purple-400 font-bold text-sm">C</div>
+                    <h3 className="text-base font-semibold text-gray-900 dark:text-white">Chat</h3>
+                    <p className="text-xs text-gray-600 dark:text-gray-400">Talk with your AI assistant</p>
                   </motion.a>
                 </div>
               </div>
@@ -367,7 +367,7 @@ function AppRouter({ currentPage }) {
   if (loading) {
     console.log('⏳ Auth still loading, showing spinner...')
     return (
-      <div className="w-full h-screen bg-white flex items-center justify-center">
+      <div className="w-full h-screen bg-white dark:bg-gray-900 flex items-center justify-center">
         <motion.div
           animate={{ rotate: 360 }}
           transition={{ duration: 2, repeat: Infinity }}

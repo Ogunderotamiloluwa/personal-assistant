@@ -71,10 +71,10 @@ export default function StatsOverview() {
 
   const getCardStyles = (accentColor) => {
     const colorMap = {
-      'orange': { bg: 'bg-orange-50 border-orange-200', icon: 'text-orange-600', bg_light: 'bg-orange-100' },
-      'emerald': { bg: 'bg-emerald-50 border-emerald-200', icon: 'text-emerald-600', bg_light: 'bg-emerald-100' },
-      'blue': { bg: 'bg-blue-50 border-blue-200', icon: 'text-blue-600', bg_light: 'bg-blue-100' },
-      'indigo': { bg: 'bg-indigo-50 border-indigo-200', icon: 'text-indigo-600', bg_light: 'bg-indigo-100' }
+      'orange': { bg: 'bg-orange-50 dark:bg-orange-900/10 border-orange-200 dark:border-orange-800', icon: 'text-orange-600 dark:text-orange-400', bg_light: 'bg-orange-100 dark:bg-orange-500/20' },
+      'emerald': { bg: 'bg-emerald-50 dark:bg-emerald-900/10 border-emerald-200 dark:border-emerald-800', icon: 'text-emerald-600 dark:text-emerald-400', bg_light: 'bg-emerald-100 dark:bg-emerald-500/20' },
+      'blue': { bg: 'bg-blue-50 dark:bg-blue-900/10 border-blue-200 dark:border-blue-800', icon: 'text-blue-600 dark:text-blue-400', bg_light: 'bg-blue-100 dark:bg-blue-500/20' },
+      'indigo': { bg: 'bg-indigo-50 dark:bg-indigo-900/10 border-indigo-200 dark:border-indigo-800', icon: 'text-indigo-600 dark:text-indigo-400', bg_light: 'bg-indigo-100 dark:bg-indigo-500/20' }
     }
     return colorMap[accentColor] || colorMap.blue
   }

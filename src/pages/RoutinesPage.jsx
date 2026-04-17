@@ -111,14 +111,14 @@ export default function RoutinesPage() {
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
                 onClick={() => window.location.hash = '#/dashboard'}
-                className="flex items-center justify-center gap-2 px-3 py-2 rounded-lg text-gray-600 hover:bg-gray-100 transition-colors text-sm"
+                className="flex items-center justify-center gap-2 px-3 py-2 rounded-lg text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors text-sm"
               >
                 <ArrowLeft size={18} />
                 <span className="hidden sm:inline">Back</span>
               </motion.button>
               <div className="flex-1 min-w-0">
-                <h1 className="text-2xl sm:text-3xl font-semibold text-gray-900 truncate">Routines</h1>
-                <p className="text-sm text-gray-500 hidden sm:block">Organize and automate your daily schedule</p>
+                <h1 className="text-2xl sm:text-3xl font-semibold text-gray-900 dark:text-white truncate">Routines</h1>
+                <p className="text-sm text-gray-500 dark:text-gray-400 hidden sm:block">Organize and automate your daily schedule</p>
               </div>
             </div>
             <motion.button
@@ -143,31 +143,31 @@ export default function RoutinesPage() {
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="p-4 rounded-lg bg-white border border-gray-200"
+            className="p-4 rounded-lg bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700"
           >
-            <div className="text-sm text-gray-600 mb-2">Total Routines</div>
-            <div className="text-2xl sm:text-3xl font-bold text-blue-600">{routines.length}</div>
+            <div className="text-sm text-gray-600 dark:text-gray-400 mb-2">Total Routines</div>
+            <div className="text-2xl sm:text-3xl font-bold text-blue-600 dark:text-blue-400">{routines.length}</div>
           </motion.div>
 
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 }}
-            className="p-4 rounded-lg bg-white border border-gray-200"
+            className="p-4 rounded-lg bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700"
           >
-            <div className="text-sm text-gray-600 mb-2">Today's Routines</div>
-            <div className="text-2xl sm:text-3xl font-bold text-indigo-600">{todayRoutines.length}</div>
-            <div className="text-xs text-gray-500 mt-1">{today}</div>
+            <div className="text-sm text-gray-600 dark:text-gray-400 mb-2">Today's Routines</div>
+            <div className="text-2xl sm:text-3xl font-bold text-indigo-600 dark:text-indigo-400">{todayRoutines.length}</div>
+            <div className="text-xs text-gray-500 dark:text-gray-500 mt-1">{today}</div>
           </motion.div>
 
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 }}
-            className="p-4 rounded-lg bg-white border border-gray-200"
+            className="p-4 rounded-lg bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700"
           >
-            <div className="text-sm text-gray-600 mb-2">Total Tasks</div>
-            <div className="text-2xl sm:text-3xl font-bold text-green-600">
+            <div className="text-sm text-gray-600 dark:text-gray-400 mb-2">Total Tasks</div>
+            <div className="text-2xl sm:text-3xl font-bold text-green-600 dark:text-green-400">
               {routines.reduce((sum, r) => sum + (r.tasks?.length || 0), 0)}
             </div>
           </motion.div>
@@ -178,7 +178,7 @@ export default function RoutinesPage() {
           <motion.div
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
-            className="mb-6 p-4 rounded-lg bg-red-50 border border-red-200 text-red-700 text-sm"
+            className="mb-6 p-4 rounded-lg bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 text-red-700 dark:text-red-400 text-sm"
           >
             {error}
           </motion.div>
@@ -201,8 +201,8 @@ export default function RoutinesPage() {
             className="text-center py-20"
           >
             <div className="text-5xl sm:text-6xl mb-4">✓</div>
-            <h2 className="text-2xl font-semibold text-gray-900 mb-3">No routines yet</h2>
-            <p className="text-gray-500 text-base mb-6 max-w-md mx-auto">Create your first routine to automate your daily schedule!</p>
+            <h2 className="text-2xl font-semibold text-gray-900 dark:text-white mb-3">No routines yet</h2>
+            <p className="text-gray-500 dark:text-gray-400 text-base mb-6 max-w-md mx-auto">Create your first routine to automate your daily schedule!</p>
             <motion.button
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
@@ -218,8 +218,8 @@ export default function RoutinesPage() {
             {/* Today's Routines Section */}
             {todayRoutines.length > 0 && (
               <div className="mb-10">
-                <h2 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
-                  <Clock size={20} className="text-blue-600" />
+                <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
+                  <Clock size={20} className="text-blue-600 dark:text-blue-400" />
                   Today's Schedule
                 </h2>
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -239,7 +239,7 @@ export default function RoutinesPage() {
 
             {/* All Routines Section */}
             <div>
-              <h2 className="text-lg font-semibold text-gray-900 mb-4">All Routines</h2>
+              <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">All Routines</h2>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                 <AnimatePresence>
                   {routines.map((routine) => (

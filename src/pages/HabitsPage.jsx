@@ -139,13 +139,13 @@ export default function HabitsManagementPage() {
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               onClick={() => window.location.hash = '#/dashboard'}
-              className="flex items-center justify-center p-2 rounded-lg text-gray-600 hover:bg-gray-100 transition-colors flex-shrink-0"
+              className="flex items-center justify-center p-2 rounded-lg text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors flex-shrink-0"
             >
               <ArrowLeft size={18} className="md:w-5 md:h-5" />
             </motion.button>
             <div className="min-w-0">
-              <h1 className="text-xl md:text-3xl font-semibold text-gray-900 truncate">Habits</h1>
-              <p className="text-xs md:text-sm text-gray-500 hidden sm:block">Build consistent habits and track progress</p>
+            <h1 className="text-xl md:text-3xl font-semibold text-gray-900 dark:text-white truncate">Habits</h1>
+            <p className="text-xs md:text-sm text-gray-500 dark:text-gray-400 hidden sm:block">Build consistent habits and track progress</p>
             </div>
           </div>
           <motion.button
@@ -170,7 +170,7 @@ export default function HabitsManagementPage() {
           <motion.div
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
-            className="mb-6 p-4 rounded-lg bg-red-50 border border-red-200 text-red-700 text-sm"
+            className="mb-6 p-4 rounded-lg bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 text-red-700 dark:text-red-400 text-sm"
           >
             {error}
           </motion.div>
@@ -193,8 +193,8 @@ export default function HabitsManagementPage() {
             className="text-center py-12 md:py-16"
           >
             <div className="text-5xl md:text-6xl mb-4">✓</div>
-            <h2 className="text-xl md:text-2xl font-semibold text-gray-900 mb-2">No habits yet</h2>
-            <p className="text-sm md:text-base text-gray-500 mb-6">Create your first habit to get started!</p>
+            <h2 className="text-xl md:text-2xl font-semibold text-gray-900 dark:text-white mb-2">No habits yet</h2>
+            <p className="text-sm md:text-base text-gray-500 dark:text-gray-400 mb-6">Create your first habit to get started!</p>
             <motion.button
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}

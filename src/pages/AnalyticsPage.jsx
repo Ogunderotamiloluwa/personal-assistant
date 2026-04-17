@@ -196,7 +196,7 @@ export default function AnalyticsPage() {
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="p-6 rounded-lg bg-white border border-gray-200"
+                className="p-6 rounded-lg bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700"
               >
                 <div className="flex items-center gap-2 mb-6">
                   <BarChart3 size={20} className="text-blue-600" />
@@ -214,7 +214,7 @@ export default function AnalyticsPage() {
                           className="h-full bg-gradient-to-r from-blue-500 to-indigo-500"
                         />
                       </div>
-                      <span className="text-sm text-gray-600 w-12 text-right">{stat.percentage}%</span>
+                      <span className="text-sm text-gray-600 dark:text-gray-400 w-12 text-right">{stat.percentage}%</span>
                     </div>
                   ))}
                 </div>
@@ -225,19 +225,19 @@ export default function AnalyticsPage() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.1 }}
-                className="p-6 rounded-lg bg-white border border-gray-200"
+                className="p-6 rounded-lg bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700"
               >
                 <div className="flex items-center gap-2 mb-6">
                   <PieChart size={20} className="text-blue-600" />
-                  <h2 className="text-lg font-semibold text-gray-900">Habit Frequency</h2>
+                  <h2 className="text-lg font-semibold text-gray-900 dark:text-white">Habit Frequency</h2>
                 </div>
                 <div className="space-y-4">
                   <div>
                     <div className="flex justify-between items-center mb-2">
-                      <span className="text-sm text-gray-600">Daily</span>
-                      <span className="text-sm font-semibold text-gray-900">{frequencyStats.daily}</span>
+                      <span className="text-sm text-gray-600 dark:text-gray-400">Daily</span>
+                      <span className="text-sm font-semibold text-gray-900 dark:text-white">{frequencyStats.daily}</span>
                     </div>
-                    <div className="h-2 bg-gray-200 rounded-full overflow-hidden">
+                    <div className="h-2 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
                       <div 
                         className="h-full bg-blue-500"
                         style={{ width: `${(frequencyStats.daily / totalHabits) * 100}%` }}
@@ -246,10 +246,10 @@ export default function AnalyticsPage() {
                   </div>
                   <div>
                     <div className="flex justify-between items-center mb-2">
-                      <span className="text-sm text-gray-600">Weekly</span>
-                      <span className="text-sm font-semibold text-gray-900">{frequencyStats.weekly}</span>
+                      <span className="text-sm text-gray-600 dark:text-gray-400">Weekly</span>
+                      <span className="text-sm font-semibold text-gray-900 dark:text-white">{frequencyStats.weekly}</span>
                     </div>
-                    <div className="h-2 bg-gray-200 rounded-full overflow-hidden">
+                    <div className="h-2 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
                       <div 
                         className="h-full bg-purple-500"
                         style={{ width: `${(frequencyStats.weekly / totalHabits) * 100}%` }}
@@ -258,10 +258,10 @@ export default function AnalyticsPage() {
                   </div>
                   <div>
                     <div className="flex justify-between items-center mb-2">
-                      <span className="text-sm text-gray-600">Monthly</span>
-                      <span className="text-sm font-semibold text-gray-900">{frequencyStats.monthly}</span>
+                      <span className="text-sm text-gray-600 dark:text-gray-400">Monthly</span>
+                      <span className="text-sm font-semibold text-gray-900 dark:text-white">{frequencyStats.monthly}</span>
                     </div>
-                    <div className="h-2 bg-gray-200 rounded-full overflow-hidden">
+                    <div className="h-2 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
                       <div 
                         className="h-full bg-cyan-500"
                         style={{ width: `${(frequencyStats.monthly / totalHabits) * 100}%` }}
@@ -276,9 +276,9 @@ export default function AnalyticsPage() {
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              className="p-6 rounded-lg bg-white border border-gray-200"
+              className="p-6 rounded-lg bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700"
             >
-              <h2 className="text-lg font-semibold text-gray-900 mb-6">Top Performing Habits</h2>
+              <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-6">Top Performing Habits</h2>
               <div className="space-y-3">
                 {habits
                   .sort((a, b) => (b.progress || 0) - (a.progress || 0))
@@ -289,19 +289,19 @@ export default function AnalyticsPage() {
                       initial={{ opacity: 0, x: -20 }}
                       animate={{ opacity: 1, x: 0 }}
                       transition={{ delay: idx * 0.05 }}
-                      className="flex items-center justify-between p-4 rounded-lg bg-gray-50 hover:bg-gray-100 transition-all"
+                      className="flex items-center justify-between p-4 rounded-lg bg-gray-50 dark:bg-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 transition-all"
                     >
                       <div className="flex items-center gap-3 flex-1">
                         <span className="text-2xl">{habit.icon || '●'}</span>
                         <div>
-                          <h3 className="text-sm font-semibold text-gray-900">{habit.name}</h3>
-                          <p className="text-xs text-gray-500">{habit.frequency}</p>
+                          <h3 className="text-sm font-semibold text-gray-900 dark:text-white">{habit.name}</h3>
+                          <p className="text-xs text-gray-500 dark:text-gray-400">{habit.frequency}</p>
                         </div>
                       </div>
                       <div className="text-right">
-                        <div className="text-lg font-bold text-blue-600">{habit.progress || 0}%</div>
+                        <div className="text-lg font-bold text-blue-600 dark:text-blue-400">{habit.progress || 0}%</div>
                         {habit.streak !== undefined && (
-                          <div className="text-xs text-orange-600 flex items-center gap-1">
+                          <div className="text-xs text-orange-600 dark:text-orange-400 flex items-center gap-1">
                             <Flame size={12} />
                             {habit.streak} days
                           </div>

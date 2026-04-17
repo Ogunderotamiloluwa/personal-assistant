@@ -133,9 +133,16 @@ export function AuthProvider({ children }) {
 
   const login = (newToken, userData) => {
     console.log('Saving token to localStorage');
+    console.log('User data received:', userData);
     localStorage.setItem('token', newToken)
     setToken(newToken)
     setUser(userData)
+    
+    // Load theme from user preferences if available
+    if (userData && userData.preferences && userData.preferences.theme) {
+      console.log('Loading theme from user preferences:', userData.preferences.theme);
+      setTheme(userData.preferences.theme)
+    }
   }
 
   const logout = () => {
